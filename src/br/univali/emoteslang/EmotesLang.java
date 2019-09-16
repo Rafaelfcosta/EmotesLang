@@ -9,11 +9,9 @@ import br.univali.emoteslang.model.analise.TratadorErrosLexico;
 import br.univali.emoteslang.model.analise.TratadorErrosSintatico;
 import br.univali.emoteslang.model.language.EmoteslangLexer;
 import br.univali.emoteslang.model.language.EmoteslangParser;
-import java.io.ByteArrayInputStream;
+import com.alee.laf.WebLookAndFeel;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +37,7 @@ public class EmotesLang {
         
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            UIManager.setLookAndFeel( new WebLookAndFeel() );
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
             Logger.getLogger(EmotesLang.class.getName()).log(Level.SEVERE, null, ex);
         }
