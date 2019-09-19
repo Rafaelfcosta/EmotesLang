@@ -25,19 +25,13 @@ import org.antlr.v4.runtime.dfa.DFA;
  */
 public class TratadorErrosSintatico implements ANTLRErrorListener
 {
-//    private final DefaultListModel modelo;
-//
-//    public TratadorErrosSintatico(DefaultListModel modelo)
-//    {
-//        this.modelo = modelo;
-//    }
-    
-    private final List<String> errors;
+    private final DefaultListModel modelo;
 
-    public TratadorErrosSintatico(List<String> list) {
-        this.errors = list;
+    public TratadorErrosSintatico(DefaultListModel modelo)
+    {
+        this.modelo = modelo;
     }
-
+    
     @Override
     public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e)
     {
@@ -47,8 +41,7 @@ public class TratadorErrosSintatico implements ANTLRErrorListener
         Collections.reverse(stack);
 
         String mensagem = "Erro sintático na linha " + line + ", coluna " + charPositionInLine + ": Regras: " + stack + ", Símbolo: " + offendingSymbol + ": " + msg;
-//        modelo.addElement(mensagem);
-        errors.add(mensagem);
+        modelo.addElement(mensagem);
     }
     
     @Override

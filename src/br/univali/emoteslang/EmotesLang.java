@@ -9,6 +9,7 @@ import br.univali.emoteslang.model.analise.TratadorErrosLexico;
 import br.univali.emoteslang.model.analise.TratadorErrosSintatico;
 import br.univali.emoteslang.model.language.EmoteslangLexer;
 import br.univali.emoteslang.model.language.EmoteslangParser;
+import br.univali.emoteslang.ui.MainWindow;
 import com.alee.laf.WebLookAndFeel;
 import java.io.File;
 import java.io.IOException;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import org.antlr.v4.runtime.ANTLRInputStream;
@@ -33,52 +35,20 @@ public class EmotesLang {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        
-        
+
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            UIManager.setLookAndFeel( new WebLookAndFeel() );
+            UIManager.setLookAndFeel(new WebLookAndFeel());
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
             Logger.getLogger(EmotesLang.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        
-        JFileChooser filechooser = new JFileChooser();
-        filechooser.setVisible(true);
-        
-        if(filechooser.showOpenDialog(filechooser) == JFileChooser.APPROVE_OPTION){
-            File file = filechooser.getSelectedFile();
-            
-            try {
-                String code = new String(Files.readAllBytes(file.toPath()));
-                System.out.println(code);
-                                
-                ANTLRInputStream ais = new ANTLRInputStream(code);
-                EmoteslangLexer lexer = new EmoteslangLexer(ais);
-                CommonTokenStream stream = new CommonTokenStream(lexer);
-                EmoteslangParser parser = new EmoteslangParser(stream);
-                
-                lexer.removeErrorListeners();
-                parser.removeErrorListeners();
-                
-                List<String> erros = new ArrayList();
-                
-                TratadorErrosLexico errosLexico = new TratadorErrosLexico(erros);
-                TratadorErrosSintatico errosSintatico = new TratadorErrosSintatico(erros);
-                
-                lexer.addErrorListener(errosLexico);
-                parser.addErrorListener(errosSintatico);
-                
-                parser.program();
-                
-                for (String erro : erros) {
-                    System.out.println(erro);
-                }             
-                
-            } catch (IOException ex) {
-                Logger.getLogger(EmotesLang.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        SwingUtilities.invokeLater(() -> {
+            MainWindow window = new MainWindow();
+            window.setVisible(true);
         }
+        );
+
     }
-    
+
 }

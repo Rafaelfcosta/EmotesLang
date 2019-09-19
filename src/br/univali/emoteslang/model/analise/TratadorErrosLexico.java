@@ -17,17 +17,11 @@ import org.antlr.v4.runtime.dfa.DFA;
  */
 public class TratadorErrosLexico implements ANTLRErrorListener
 {
-//    private final DefaultListModel modelo;
-//
-//    public TratadorErrosLexico(DefaultListModel modelo)
-//    {
-//        this.modelo = modelo;
-//    }
-    
-    private final List<String> errors;
+    private final DefaultListModel modelo;;
 
-    public TratadorErrosLexico(List<String> list) {
-        this.errors = list;
+    public TratadorErrosLexico(DefaultListModel modelo)
+    {
+        this.modelo = modelo;
     }
     
     @Override
@@ -35,8 +29,7 @@ public class TratadorErrosLexico implements ANTLRErrorListener
     {
         Lexer lexer = (Lexer) recognizer;
         String mensagem = "Erro sintático na linha " + line + ", coluna " + charPositionInLine + ": " + msg;
-        errors.add(mensagem);
-//        modelo.addElement(mensagem);
+        modelo.addElement(mensagem);
     }
 
     @Override
