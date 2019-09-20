@@ -1,4 +1,4 @@
-// Generated from Emoteslang.g4 by ANTLR 4.7.2
+// Generated from .\Emoteslang.g4 by ANTLR 4.7.2
 package br.univali.emoteslang.model.language;
 
 import org.antlr.v4.runtime.ParserRuleContext;

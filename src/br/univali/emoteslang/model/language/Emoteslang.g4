@@ -162,7 +162,7 @@ expression
     |   expression BIT_AND expression
     |   expression BIT_OR expression
     |   ID
-    |   (INT | HEXA)
+    |   (INT | HEXA | BIN)
     |   DOUBLE
     |   FLOAT
     |   BOOLEAN
