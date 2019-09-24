@@ -14,6 +14,7 @@ import java.awt.Color;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -21,8 +22,11 @@ import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.fife.ui.rsyntaxtextarea.AbstractTokenMakerFactory;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
+import org.fife.ui.rsyntaxtextarea.Theme;
+import org.fife.ui.rsyntaxtextarea.TokenMakerFactory;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
 /**
@@ -42,7 +46,16 @@ public class MainWindow extends javax.swing.JFrame {
         this.setSize(1024, 768);
         
         emotesTextArea = new RSyntaxTextArea(20, 60);
-        emotesTextArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
+        
+        AbstractTokenMakerFactory atmf = (AbstractTokenMakerFactory)TokenMakerFactory.getDefaultInstance();
+        atmf.putMapping("text/emotesLanguage", "br.univali.emoteslang.ui.rsa.EmotesTokenMaker");
+        
+        emotesTextArea.setSyntaxEditingStyle("text/emotesLanguage");
+        
+        Theme theme = carregarTema();
+        theme.apply(emotesTextArea);
+        
+//        emotesTextArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
 //        emotesTextArea.setBackground(new Color(100,65,164));
         
         emotesScrollPane = new RTextScrollPane(emotesTextArea);
@@ -52,6 +65,18 @@ public class MainWindow extends javax.swing.JFrame {
         setLocationRelativeTo(null);
         
         
+    }
+    
+    private Theme carregarTema(){
+        final String caminho = "br/univali/emoteslang/ui/resources/dark.xml";
+        final InputStream resourceStream = ClassLoader.getSystemClassLoader().getResourceAsStream(caminho);
+        if (resourceStream != null) {
+            try {
+                return Theme.load(resourceStream);
+            } catch (IOException e) {
+                
+            }
+        }        return null;
     }
 
     /**
