@@ -33,6 +33,7 @@ public class EmotesLang {
         
         SwingUtilities.invokeLater(() -> {
             MainWindow window = new MainWindow();
+            window.setTitle("Emotes Language Editor");
             window.setVisible(true);
         }
         );

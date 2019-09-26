@@ -292,6 +292,18 @@ public class EmoteslangBaseListener implements EmoteslangListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterIfdeselseif(EmoteslangParser.IfdeselseifContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitIfdeselseif(EmoteslangParser.IfdeselseifContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterWhiledes(EmoteslangParser.WhiledesContext ctx) { }
 	/**
 	 * {@inheritDoc}

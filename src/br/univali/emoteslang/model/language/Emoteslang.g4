@@ -4,7 +4,7 @@ import EmoteslangLexico;
 
 program 
     :   START LEFT_CBRACKETS 
-        (statements | functions)* RIGHT_CBRACKETS 
+        statements*  functions RIGHT_CBRACKETS 
         FINISH ;
 
 statements
@@ -41,8 +41,8 @@ arrayIndex
     : LEFT_SBRACKET expression RIGHT_SBRACKET;
 
 functions
-    : FUNCTION typeWithVoid? ID LEFT_PARENTESIS parametersList? RIGHT_PARENTESIS 
-                            LEFT_CBRACKETS commands* RIGHT_CBRACKETS;
+    : (FUNCTION typeWithVoid? ID LEFT_PARENTESIS parametersList? RIGHT_PARENTESIS 
+                            LEFT_CBRACKETS commands* RIGHT_CBRACKETS) functions*;
 
 parametersList
     : parameter (',' parameter)*;
@@ -84,7 +84,10 @@ conditionals
     ;
 
 ifdes
-    : IF LEFT_PARENTESIS expression RIGHT_PARENTESIS commandList (ELSE commandList)?;
+    : IF LEFT_PARENTESIS expression RIGHT_PARENTESIS commandList (ELSE commandList | ifdeselseif )?;
+
+ifdeselseif
+    : ELSEIF ifdes;
 
 whiledes
     : WHILE LEFT_PARENTESIS expression RIGHT_PARENTESIS commandList;
@@ -93,7 +96,7 @@ doWhile
     : DO commandList WHILE LEFT_PARENTESIS expression RIGHT_PARENTESIS;
 
 fordes
-    : FOR LEFT_PARENTESIS initializeFor? ';' condition ';' incrementFor RIGHT_PARENTESIS commandList;
+    : FOR LEFT_PARENTESIS initializeFor? DOT_COMMA condition DOT_COMMA incrementFor RIGHT_PARENTESIS commandList;
 
 switchdes
     : SWITCH LEFT_PARENTESIS expression RIGHT_PARENTESIS LEFT_CBRACKETS casedes* defaultdes? RIGHT_CBRACKETS;

@@ -4,32 +4,45 @@ HeyGuys
     int lulu = 10 Clap
     string text = "aaaaaaa" Clap
 
-        TriHard sim P()G
-            Kappa
-                pikaHi P(Coolcat)G 
-                Kappa
-                    lulu + 1 Clap
-                KappaPride
-            
-            justDOIT Kappa
+		TriHard sim P(  )G
+		  Kappa	
+		  		Mute IF
+				pikaHi P( CoolCat )G
+				Kappa
+					lulu + 1 Clap
+				KappaPride
+				
+				Mute While
+				Woah P( CoolCat )G
+				Kappa
+								
+				KappaPride 
+				
+				Mute Do While
+				justDOIT 
+				Kappa
+								
+				KappaPride Woah P( CoolCat )G
 
-            KappaPride Woah P(Coolcat)G
+				Mute for
+				4Head P( int i = 0 Clap i < 10 Clap i++ )G
+				Kappa
+								
+				KappaPride
 
-            KappaPride
-
-        TriHard sim P()G
-            Kappa
-                jerryWhat P(lulu)G
-                    Kappa
-                        Triggered 1:
-                            WaitWhat
-                        Triggered 2:
-                            WaitWhat
-                        Triggered 3:
-                            WaitWhat
-                        BabyRage:
-                            0
-                KappaPride        
-            KappaPride
+				Mute Switch
+				jerryWhat P( lulu )G
+				Kappa
+			         Triggered 1:
+			             WaitWhat
+			         Triggered 2:
+			             WaitWhat
+			         Triggered 3:
+			             WaitWhat
+			         BabyRage :
+			             0
+				KappaPride        
+			KappaPride
+					 
     KappaPride
 RIP

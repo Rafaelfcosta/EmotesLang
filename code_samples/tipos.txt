@@ -1,0 +1,38 @@
+HeyGuys
+    Kappa
+
+		int a_z = P( 1 + 1 )G * 3 Clap
+		float b = 10.5f - 12.2f  Clap
+		double c = 1.2 * 2 Clap
+		char d = 'a' Clap
+		string e = "texto" Clap
+		bin f = 0b10101001011 Clap
+		hex g = 0xAABA1211 Clap
+		int h = 10 / 2 Clap
+
+		int vec[10]
+		int mat[10][2]
+	
+	    	TriHard main P( )G 
+	    	Kappa
+			GivePLZ P( x )G 
+			Bonfire P("aaaaaaaaaaaaa")G 
+	    	
+	    		batata_frita P( 2 )G  Clap
+	    		sim_mas_nao P( vec )G  Clap
+	    	KappaPride
+
+		TriHard batata_frita P( int a )G 
+	    	Kappa
+	    	
+	    	KappaPride
+
+	    	TriHard int sim_mas_nao P( int x[] )G 
+	    	Kappa
+	    		imOut 0 Clap
+	    	KappaPride
+
+		
+    	
+    KappaPride
+RIP

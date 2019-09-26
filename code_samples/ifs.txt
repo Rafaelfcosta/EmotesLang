@@ -1,0 +1,31 @@
+HeyGuys
+    Kappa
+		TriHard test P( )G 
+		Kappa
+			pikaHi P( 1 > 2 )G 
+			Kappa
+			
+			KappaPride
+			pikaOH pikaHi P( 2 < 3 )G  
+			Kappa
+			
+			KappaPride
+			pikaOH pikaHi P( CoolCat && CoolCat )G  
+			Kappa
+			
+			KappaPride
+			pikaOH pikaHi P( NotLikeThis CoolCat || CoolCat )G  
+			Kappa
+			
+			KappaPride
+			pikaOH pikaHi P( CoolCat )G  
+			Kappa
+			
+			KappaPride
+			seaPika
+			Kappa
+			
+			KappaPride
+		KappaPride
+    KappaPride
+RIP

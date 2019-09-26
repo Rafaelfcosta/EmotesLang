@@ -34,7 +34,7 @@ import org.fife.ui.rtextarea.RTextScrollPane;
  * @author noschang
  */
 public class MainWindow extends javax.swing.JFrame {
-
+    
     RSyntaxTextArea emotesTextArea;
     RTextScrollPane emotesScrollPane;
     
@@ -47,7 +47,7 @@ public class MainWindow extends javax.swing.JFrame {
         
         emotesTextArea = new RSyntaxTextArea(20, 60);
         
-        AbstractTokenMakerFactory atmf = (AbstractTokenMakerFactory)TokenMakerFactory.getDefaultInstance();
+        AbstractTokenMakerFactory atmf = (AbstractTokenMakerFactory) TokenMakerFactory.getDefaultInstance();
         atmf.putMapping("text/emotesLanguage", "br.univali.emoteslang.ui.rsa.EmotesTokenMaker");
         
         emotesTextArea.setSyntaxEditingStyle("text/emotesLanguage");
@@ -55,19 +55,25 @@ public class MainWindow extends javax.swing.JFrame {
         Theme theme = carregarTema();
         theme.apply(emotesTextArea);
         
-//        emotesTextArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
-//        emotesTextArea.setBackground(new Color(100,65,164));
+        emotesTextArea.setText("HeyGuys\n"
+                + "    Kappa\n"
+                + "	\n"
+                + "	    	TriHard main P( )G \n"
+                + "	    	Kappa\n"
+                + "	    	\n"
+                + "	    	KappaPride\n"
+                + "    	\n"
+                + "    KappaPride\n"
+                + "RIP");
         
         emotesScrollPane = new RTextScrollPane(emotesTextArea);
         painelEditor.add(emotesScrollPane);
-
         
         setLocationRelativeTo(null);
         
-        
     }
     
-    private Theme carregarTema(){
+    private Theme carregarTema() {
         final String caminho = "br/univali/emoteslang/ui/resources/dark.xml";
         final InputStream resourceStream = ClassLoader.getSystemClassLoader().getResourceAsStream(caminho);
         if (resourceStream != null) {
@@ -76,7 +82,8 @@ public class MainWindow extends javax.swing.JFrame {
             } catch (IOException e) {
                 
             }
-        }        return null;
+        }
+        return null;
     }
 
     /**
@@ -93,6 +100,7 @@ public class MainWindow extends javax.swing.JFrame {
         jSplitPane1 = new javax.swing.JSplitPane();
         painelEditor = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
         jButton2 = new javax.swing.JButton();
         painelMsgs = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
@@ -119,13 +127,17 @@ public class MainWindow extends javax.swing.JFrame {
         jLabel1.setText("Código:");
         painelEditor.add(jLabel1, java.awt.BorderLayout.PAGE_START);
 
-        jButton2.setText("Testar");
+        jPanel1.setLayout(new java.awt.BorderLayout());
+
+        jButton2.setText("Compilar");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
             }
         });
-        painelEditor.add(jButton2, java.awt.BorderLayout.PAGE_END);
+        jPanel1.add(jButton2, java.awt.BorderLayout.EAST);
+
+        painelEditor.add(jPanel1, java.awt.BorderLayout.SOUTH);
 
         jSplitPane1.setTopComponent(painelEditor);
 
@@ -175,10 +187,10 @@ public class MainWindow extends javax.swing.JFrame {
         EmoteslangLexer lexer = new EmoteslangLexer(ais);
         CommonTokenStream stream = new CommonTokenStream(lexer);
         EmoteslangParser parser = new EmoteslangParser(stream);
-
+        
         DefaultListModel modeloLista = new DefaultListModel();
         listaMensagens.setModel(modeloLista);
-
+        
         TratadorErrosLexico tratadorErrosLexico = new TratadorErrosLexico(modeloLista);
         TratadorErrosSintatico tratadorErrosSintatico = new TratadorErrosSintatico(modeloLista);
 
@@ -194,26 +206,25 @@ public class MainWindow extends javax.swing.JFrame {
         // Chama a regar inicial do parser, esta regra deve estar definida na gramática
         parser.program();
         
-        if(modeloLista.isEmpty()){
-            modeloLista.addElement("Compilado com sucesso!");          
+        if (modeloLista.isEmpty()) {
+            modeloLista.addElement("Compilado com sucesso!");            
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void btnOpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOpenActionPerformed
-
+        
         JFileChooser filechooser = new JFileChooser("./code_samples");
         filechooser.setVisible(true);
-
+        
         if (filechooser.showOpenDialog(filechooser) == JFileChooser.APPROVE_OPTION) {
             File file = filechooser.getSelectedFile();
-
+            
             try {
                 String code = new String(Files.readAllBytes(file.toPath()));
                 emotesTextArea.setText(code);
                 
                 emotesTextArea.setCaretPosition(0);
                 
-
             } catch (IOException ex) {
                 Logger.getLogger(EmotesLang.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -221,10 +232,10 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_btnOpenActionPerformed
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
-        JFileChooser filechooser = new JFileChooser();
+        JFileChooser filechooser = new JFileChooser("./code_samples");
         filechooser.showSaveDialog(this);
         
-        try(FileWriter fw = new FileWriter(filechooser.getSelectedFile()+".txt")) {
+        try (FileWriter fw = new FileWriter(filechooser.getSelectedFile() + ".txt")) {
             fw.write(emotesTextArea.getText());
         } catch (Exception e) {
         }
@@ -240,6 +251,7 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JList listaMensagens;
