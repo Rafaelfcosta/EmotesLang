@@ -1,5 +1,6 @@
 // Generated from .\Emoteslang.g4 by ANTLR 4.7.2
 package br.univali.emoteslang.model.language;
+import br.univali.emoteslang.model.visitor.EmoteslangVisitor;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
@@ -159,6 +160,11 @@ public class EmoteslangParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof EmoteslangListener ) ((EmoteslangListener)listener).exitProgram(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof EmoteslangVisitor ) return ((EmoteslangVisitor<? extends T>)visitor).visitProgram(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final ProgramContext program() throws RecognitionException {
@@ -231,6 +237,11 @@ public class EmoteslangParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof EmoteslangListener ) ((EmoteslangListener)listener).exitStatements(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof EmoteslangVisitor ) return ((EmoteslangVisitor<? extends T>)visitor).visitStatements(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -306,6 +317,11 @@ public class EmoteslangParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof EmoteslangListener ) ((EmoteslangListener)listener).exitDeclaration(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof EmoteslangVisitor ) return ((EmoteslangVisitor<? extends T>)visitor).visitDeclaration(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final DeclarationContext declaration() throws RecognitionException {
@@ -366,6 +382,11 @@ public class EmoteslangParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof EmoteslangListener ) ((EmoteslangListener)listener).exitDeclarationVar(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof EmoteslangVisitor ) return ((EmoteslangVisitor<? extends T>)visitor).visitDeclarationVar(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -434,6 +455,11 @@ public class EmoteslangParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof EmoteslangListener ) ((EmoteslangListener)listener).exitDeclarationMatrix(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof EmoteslangVisitor ) return ((EmoteslangVisitor<? extends T>)visitor).visitDeclarationMatrix(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -524,6 +550,11 @@ public class EmoteslangParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof EmoteslangListener ) ((EmoteslangListener)listener).exitInitializeMatrix(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof EmoteslangVisitor ) return ((EmoteslangVisitor<? extends T>)visitor).visitInitializeMatrix(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final InitializeMatrixContext initializeMatrix() throws RecognitionException {
@@ -590,6 +621,11 @@ public class EmoteslangParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof EmoteslangListener ) ((EmoteslangListener)listener).exitDeclarationArray(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof EmoteslangVisitor ) return ((EmoteslangVisitor<? extends T>)visitor).visitDeclarationArray(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -659,6 +695,11 @@ public class EmoteslangParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof EmoteslangListener ) ((EmoteslangListener)listener).exitInitializeArray(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof EmoteslangVisitor ) return ((EmoteslangVisitor<? extends T>)visitor).visitInitializeArray(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final InitializeArrayContext initializeArray() throws RecognitionException {
@@ -711,6 +752,11 @@ public class EmoteslangParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof EmoteslangListener ) ((EmoteslangListener)listener).exitMatrixLine(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof EmoteslangVisitor ) return ((EmoteslangVisitor<? extends T>)visitor).visitMatrixLine(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final MatrixLineContext matrixLine() throws RecognitionException {
@@ -750,6 +796,11 @@ public class EmoteslangParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof EmoteslangListener ) ((EmoteslangListener)listener).exitMatrixCol(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof EmoteslangVisitor ) return ((EmoteslangVisitor<? extends T>)visitor).visitMatrixCol(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final MatrixColContext matrixCol() throws RecognitionException {
@@ -787,6 +838,11 @@ public class EmoteslangParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof EmoteslangListener ) ((EmoteslangListener)listener).exitArraySize(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof EmoteslangVisitor ) return ((EmoteslangVisitor<? extends T>)visitor).visitArraySize(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -837,6 +893,11 @@ public class EmoteslangParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof EmoteslangListener ) ((EmoteslangListener)listener).exitArrayIndex(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof EmoteslangVisitor ) return ((EmoteslangVisitor<? extends T>)visitor).visitArrayIndex(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -901,6 +962,11 @@ public class EmoteslangParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof EmoteslangListener ) ((EmoteslangListener)listener).exitFunctions(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof EmoteslangVisitor ) return ((EmoteslangVisitor<? extends T>)visitor).visitFunctions(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1012,6 +1078,11 @@ public class EmoteslangParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof EmoteslangListener ) ((EmoteslangListener)listener).exitParametersList(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof EmoteslangVisitor ) return ((EmoteslangVisitor<? extends T>)visitor).visitParametersList(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final ParametersListContext parametersList() throws RecognitionException {
@@ -1075,6 +1146,11 @@ public class EmoteslangParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof EmoteslangListener ) ((EmoteslangListener)listener).exitParameter(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof EmoteslangVisitor ) return ((EmoteslangVisitor<? extends T>)visitor).visitParameter(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1143,6 +1219,11 @@ public class EmoteslangParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof EmoteslangListener ) ((EmoteslangListener)listener).exitParamArray(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof EmoteslangVisitor ) return ((EmoteslangVisitor<? extends T>)visitor).visitParamArray(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final ParamArrayContext paramArray() throws RecognitionException {
@@ -1188,6 +1269,11 @@ public class EmoteslangParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof EmoteslangListener ) ((EmoteslangListener)listener).exitParamMatrix(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof EmoteslangVisitor ) return ((EmoteslangVisitor<? extends T>)visitor).visitParamMatrix(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1237,6 +1323,11 @@ public class EmoteslangParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof EmoteslangListener ) ((EmoteslangListener)listener).exitInputAndOutput(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof EmoteslangVisitor ) return ((EmoteslangVisitor<? extends T>)visitor).visitInputAndOutput(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1298,6 +1389,11 @@ public class EmoteslangParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof EmoteslangListener ) ((EmoteslangListener)listener).exitParametersCall(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof EmoteslangVisitor ) return ((EmoteslangVisitor<? extends T>)visitor).visitParametersCall(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1365,6 +1461,11 @@ public class EmoteslangParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof EmoteslangListener ) ((EmoteslangListener)listener).exitCommands(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof EmoteslangVisitor ) return ((EmoteslangVisitor<? extends T>)visitor).visitCommands(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1468,6 +1569,11 @@ public class EmoteslangParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof EmoteslangListener ) ((EmoteslangListener)listener).exitCommand(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof EmoteslangVisitor ) return ((EmoteslangVisitor<? extends T>)visitor).visitCommand(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final CommandContext command() throws RecognitionException {
@@ -1569,6 +1675,11 @@ public class EmoteslangParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof EmoteslangListener ) ((EmoteslangListener)listener).exitConditionals(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof EmoteslangVisitor ) return ((EmoteslangVisitor<? extends T>)visitor).visitConditionals(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final ConditionalsContext conditionals() throws RecognitionException {
@@ -1668,6 +1779,11 @@ public class EmoteslangParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof EmoteslangListener ) ((EmoteslangListener)listener).exitIfdes(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof EmoteslangVisitor ) return ((EmoteslangVisitor<? extends T>)visitor).visitIfdes(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final IfdesContext ifdes() throws RecognitionException {
@@ -1734,6 +1850,11 @@ public class EmoteslangParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof EmoteslangListener ) ((EmoteslangListener)listener).exitIfdeselseif(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof EmoteslangVisitor ) return ((EmoteslangVisitor<? extends T>)visitor).visitIfdeselseif(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final IfdeselseifContext ifdeselseif() throws RecognitionException {
@@ -1780,6 +1901,11 @@ public class EmoteslangParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof EmoteslangListener ) ((EmoteslangListener)listener).exitWhiledes(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof EmoteslangVisitor ) return ((EmoteslangVisitor<? extends T>)visitor).visitWhiledes(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1834,6 +1960,11 @@ public class EmoteslangParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof EmoteslangListener ) ((EmoteslangListener)listener).exitDoWhile(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof EmoteslangVisitor ) return ((EmoteslangVisitor<? extends T>)visitor).visitDoWhile(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1899,6 +2030,11 @@ public class EmoteslangParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof EmoteslangListener ) ((EmoteslangListener)listener).exitFordes(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof EmoteslangVisitor ) return ((EmoteslangVisitor<? extends T>)visitor).visitFordes(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1977,6 +2113,11 @@ public class EmoteslangParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof EmoteslangListener ) ((EmoteslangListener)listener).exitSwitchdes(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof EmoteslangVisitor ) return ((EmoteslangVisitor<? extends T>)visitor).visitSwitchdes(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -2064,6 +2205,11 @@ public class EmoteslangParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof EmoteslangListener ) ((EmoteslangListener)listener).exitCasedes(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof EmoteslangVisitor ) return ((EmoteslangVisitor<? extends T>)visitor).visitCasedes(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -2208,6 +2354,11 @@ public class EmoteslangParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof EmoteslangListener ) ((EmoteslangListener)listener).exitDefaultdes(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof EmoteslangVisitor ) return ((EmoteslangVisitor<? extends T>)visitor).visitDefaultdes(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final DefaultdesContext defaultdes() throws RecognitionException {
@@ -2260,6 +2411,11 @@ public class EmoteslangParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof EmoteslangListener ) ((EmoteslangListener)listener).exitBreakdes(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof EmoteslangVisitor ) return ((EmoteslangVisitor<? extends T>)visitor).visitBreakdes(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final BreakdesContext breakdes() throws RecognitionException {
@@ -2299,6 +2455,11 @@ public class EmoteslangParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof EmoteslangListener ) ((EmoteslangListener)listener).exitReturndes(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof EmoteslangVisitor ) return ((EmoteslangVisitor<? extends T>)visitor).visitReturndes(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -2353,6 +2514,11 @@ public class EmoteslangParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof EmoteslangListener ) ((EmoteslangListener)listener).exitCommandList(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof EmoteslangVisitor ) return ((EmoteslangVisitor<? extends T>)visitor).visitCommandList(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -2462,6 +2628,11 @@ public class EmoteslangParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof EmoteslangListener ) ((EmoteslangListener)listener).exitInitializeFor(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof EmoteslangVisitor ) return ((EmoteslangVisitor<? extends T>)visitor).visitInitializeFor(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final InitializeForContext initializeFor() throws RecognitionException {
@@ -2524,6 +2695,11 @@ public class EmoteslangParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof EmoteslangListener ) ((EmoteslangListener)listener).exitIncrementFor(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof EmoteslangVisitor ) return ((EmoteslangVisitor<? extends T>)visitor).visitIncrementFor(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final IncrementForContext incrementFor() throws RecognitionException {
@@ -2576,6 +2752,11 @@ public class EmoteslangParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof EmoteslangListener ) ((EmoteslangListener)listener).exitCondition(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof EmoteslangVisitor ) return ((EmoteslangVisitor<? extends T>)visitor).visitCondition(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final ConditionContext condition() throws RecognitionException {
@@ -2618,6 +2799,11 @@ public class EmoteslangParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof EmoteslangListener ) ((EmoteslangListener)listener).exitAttribution(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof EmoteslangVisitor ) return ((EmoteslangVisitor<? extends T>)visitor).visitAttribution(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -2706,6 +2892,11 @@ public class EmoteslangParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof EmoteslangListener ) ((EmoteslangListener)listener).exitExpression(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof EmoteslangVisitor ) return ((EmoteslangVisitor<? extends T>)visitor).visitExpression(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -3244,6 +3435,11 @@ public class EmoteslangParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof EmoteslangListener ) ((EmoteslangListener)listener).exitTypeWithVoid(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof EmoteslangVisitor ) return ((EmoteslangVisitor<? extends T>)visitor).visitTypeWithVoid(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final TypeWithVoidContext typeWithVoid() throws RecognitionException {
@@ -3310,6 +3506,11 @@ public class EmoteslangParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof EmoteslangListener ) ((EmoteslangListener)listener).exitType(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof EmoteslangVisitor ) return ((EmoteslangVisitor<? extends T>)visitor).visitType(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final TypeContext type() throws RecognitionException {
@@ -3364,6 +3565,11 @@ public class EmoteslangParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof EmoteslangListener ) ((EmoteslangListener)listener).exitExpressionList(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof EmoteslangVisitor ) return ((EmoteslangVisitor<? extends T>)visitor).visitExpressionList(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
