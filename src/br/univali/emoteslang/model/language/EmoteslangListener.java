@@ -368,6 +368,26 @@ public interface EmoteslangListener extends ParseTreeListener {
 	 */
 	void exitCondition(EmoteslangParser.ConditionContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link EmoteslangParser#array}.
+	 * @param ctx the parse tree
+	 */
+	void enterArray(EmoteslangParser.ArrayContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link EmoteslangParser#array}.
+	 * @param ctx the parse tree
+	 */
+	void exitArray(EmoteslangParser.ArrayContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link EmoteslangParser#matrix}.
+	 * @param ctx the parse tree
+	 */
+	void enterMatrix(EmoteslangParser.MatrixContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link EmoteslangParser#matrix}.
+	 * @param ctx the parse tree
+	 */
+	void exitMatrix(EmoteslangParser.MatrixContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link EmoteslangParser#attribution}.
 	 * @param ctx the parse tree
 	 */
@@ -387,6 +407,16 @@ public interface EmoteslangListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitExpression(EmoteslangParser.ExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link EmoteslangParser#finalValue}.
+	 * @param ctx the parse tree
+	 */
+	void enterFinalValue(EmoteslangParser.FinalValueContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link EmoteslangParser#finalValue}.
+	 * @param ctx the parse tree
+	 */
+	void exitFinalValue(EmoteslangParser.FinalValueContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link EmoteslangParser#typeWithVoid}.
 	 * @param ctx the parse tree

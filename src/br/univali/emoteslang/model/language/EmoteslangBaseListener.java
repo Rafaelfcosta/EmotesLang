@@ -448,6 +448,30 @@ public class EmoteslangBaseListener implements EmoteslangListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterArray(EmoteslangParser.ArrayContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitArray(EmoteslangParser.ArrayContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterMatrix(EmoteslangParser.MatrixContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitMatrix(EmoteslangParser.MatrixContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterAttribution(EmoteslangParser.AttributionContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -467,6 +491,18 @@ public class EmoteslangBaseListener implements EmoteslangListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitExpression(EmoteslangParser.ExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterFinalValue(EmoteslangParser.FinalValueContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitFinalValue(EmoteslangParser.FinalValueContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

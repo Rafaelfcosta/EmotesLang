@@ -13,26 +13,24 @@ HeyGuys
 		int vec[10]
 		int mat[10][2]
 	
-	    	TriHard main P( )G 
-	    	Kappa
+		TriHard void main P( )G 
+		Kappa
 			GivePLZ P( x )G 
 			Bonfire P("aaaaaaaaaaaaa")G 
-	    	
-	    		batata_frita P( 2 )G  Clap
-	    		sim_mas_nao P( vec )G  Clap
-	    	KappaPride
+			
+				batata_frita P( 2 )G  Clap
+				sim_mas_nao P( vec )G  Clap
+		KappaPride
 
-		TriHard batata_frita P( int a )G 
-	    	Kappa
-	    	
-	    	KappaPride
-
-	    	TriHard int sim_mas_nao P( int x[] )G 
-	    	Kappa
-	    		imOut 0 Clap
-	    	KappaPride
-
+		TriHard void batata_frita P( int a )G 
+		Kappa
 		
+		KappaPride
+
+		TriHard int sim_mas_nao P( int x[] )G 
+		Kappa
+			imOut 0 Clap
+		KappaPride
     	
     KappaPride
 RIP

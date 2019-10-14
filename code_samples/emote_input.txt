@@ -4,7 +4,7 @@ HeyGuys
     int lulu = 10 Clap
     string text = "aaaaaaa" Clap
 
-		TriHard sim P(  )G
+		TriHard void main P(  )G
 		  Kappa	
 		  		Mute IF
 				pikaHi P( CoolCat )G

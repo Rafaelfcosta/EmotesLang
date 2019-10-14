@@ -4,8 +4,9 @@ import EmoteslangLexico;
 
 program 
     :   START LEFT_CBRACKETS 
-        statements*  functions RIGHT_CBRACKETS 
-        FINISH ;
+        statements* functions+ RIGHT_CBRACKETS 
+        FINISH
+    ;
 
 statements
     :  type declaration (',' declaration)* DOT_COMMA?;
@@ -41,8 +42,8 @@ arrayIndex
     : LEFT_SBRACKET expression RIGHT_SBRACKET;
 
 functions
-    : (FUNCTION typeWithVoid? ID LEFT_PARENTESIS parametersList? RIGHT_PARENTESIS 
-                            LEFT_CBRACKETS commands* RIGHT_CBRACKETS) functions*;
+    : (FUNCTION typeWithVoid ID LEFT_PARENTESIS parametersList? RIGHT_PARENTESIS 
+                            LEFT_CBRACKETS commands* RIGHT_CBRACKETS);
 
 parametersList
     : parameter (',' parameter)*;
@@ -120,7 +121,6 @@ initializeFor
     : 
         attribution
     |   statements
-    |   ID
     ;
 
 //precisa de atribuicao composta?
@@ -130,14 +130,20 @@ incrementFor
 condition
     : expression;
 
+array
+    : ID arrayIndex;
+
+matrix
+    : ID arrayIndex arrayIndex;
+
 attribution
-    : expression ATTRIBUTION expression;
+    : (ID | array | matrix) ATTRIBUTION expression;
 
 expression
     : 
         ID LEFT_PARENTESIS expressionList? RIGHT_PARENTESIS
-    |   ID arrayIndex
-    |   ID arrayIndex arrayIndex?
+    |   array
+    |   matrix
     |   ADD expression
     |   SUB expression
     |   NOT expression
@@ -164,7 +170,11 @@ expression
     |   expression BIT_RS expression
     |   expression BIT_AND expression
     |   expression BIT_OR expression
-    |   ID
+    |   finalValue
+    ;
+
+finalValue: 
+        ID
     |   (INT | HEXA | BIN)
     |   DOUBLE
     |   FLOAT

@@ -1,7 +1,7 @@
 HeyGuys
     Kappa
 	
-	    	TriHard main P( )G 
+	    	TriHard void main P( )G 
 	    	Kappa
 
 

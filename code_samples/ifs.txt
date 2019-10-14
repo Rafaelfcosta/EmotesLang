@@ -1,6 +1,6 @@
 HeyGuys
     Kappa
-		TriHard test P( )G 
+		TriHard void main P( )G 
 		Kappa
 			pikaHi P( 1 > 2 )G 
 			Kappa

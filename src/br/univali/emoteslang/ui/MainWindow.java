@@ -6,25 +6,34 @@
 package br.univali.emoteslang.ui;
 
 import br.univali.emoteslang.EmotesLang;
-import br.univali.emoteslang.model.analise.TratadorErrosLexico;
-import br.univali.emoteslang.model.analise.TratadorErrosSintatico;
+import br.univali.emoteslang.model.analise.ErroLexico;
+import br.univali.emoteslang.model.analise.Identificador;
 import br.univali.emoteslang.model.language.EmoteslangLexer;
 import br.univali.emoteslang.model.language.EmoteslangParser;
-import java.awt.Color;
+import br.univali.emoteslang.model.visitor.EmotesSemanticVisitor;
+import java.awt.Dimension;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+import javax.swing.tree.DefaultMutableTreeNode;
+import org.antlr.v4.gui.TreeViewer;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.Tree;
 import org.fife.ui.rsyntaxtextarea.AbstractTokenMakerFactory;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
-import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rsyntaxtextarea.Theme;
 import org.fife.ui.rsyntaxtextarea.TokenMakerFactory;
 import org.fife.ui.rtextarea.RTextScrollPane;
@@ -34,45 +43,46 @@ import org.fife.ui.rtextarea.RTextScrollPane;
  * @author noschang
  */
 public class MainWindow extends javax.swing.JFrame {
-    
+
     RSyntaxTextArea emotesTextArea;
     RTextScrollPane emotesScrollPane;
-    
+    List<Identificador> ids = null;
+
     public MainWindow() {
         initComponents();
 //        painelEditor.setBackground(new Color(100,65,164));
 //        painelMsgs.setBackground(new Color(100,65,164));
 //        listaMensagens.setBackground(new Color(100,65,164));
         this.setSize(1024, 768);
-        
+
         emotesTextArea = new RSyntaxTextArea(20, 60);
-        
+
         AbstractTokenMakerFactory atmf = (AbstractTokenMakerFactory) TokenMakerFactory.getDefaultInstance();
         atmf.putMapping("text/emotesLanguage", "br.univali.emoteslang.ui.rsa.EmotesTokenMaker");
-        
+
         emotesTextArea.setSyntaxEditingStyle("text/emotesLanguage");
-        
+
         Theme theme = carregarTema();
         theme.apply(emotesTextArea);
-        
+
         emotesTextArea.setText("HeyGuys\n"
                 + "    Kappa\n"
                 + "	\n"
-                + "	    	TriHard main P( )G \n"
+                + "	    	TriHard void main P( )G \n"
                 + "	    	Kappa\n"
                 + "	    	\n"
                 + "	    	KappaPride\n"
                 + "    	\n"
                 + "    KappaPride\n"
                 + "RIP");
-        
+
         emotesScrollPane = new RTextScrollPane(emotesTextArea);
         painelEditor.add(emotesScrollPane);
-        
+
         setLocationRelativeTo(null);
-        
+
     }
-    
+
     private Theme carregarTema() {
         final String caminho = "br/univali/emoteslang/ui/resources/dark.xml";
         final InputStream resourceStream = ClassLoader.getSystemClassLoader().getResourceAsStream(caminho);
@@ -80,7 +90,7 @@ public class MainWindow extends javax.swing.JFrame {
             try {
                 return Theme.load(resourceStream);
             } catch (IOException e) {
-                
+
             }
         }
         return null;
@@ -101,7 +111,7 @@ public class MainWindow extends javax.swing.JFrame {
         painelEditor = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
-        jButton2 = new javax.swing.JButton();
+        btnCompilar = new javax.swing.JButton();
         painelMsgs = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -129,13 +139,13 @@ public class MainWindow extends javax.swing.JFrame {
 
         jPanel1.setLayout(new java.awt.BorderLayout());
 
-        jButton2.setText("Compilar");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        btnCompilar.setText("Compilar");
+        btnCompilar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                btnCompilarActionPerformed(evt);
             }
         });
-        jPanel1.add(jButton2, java.awt.BorderLayout.EAST);
+        jPanel1.add(btnCompilar, java.awt.BorderLayout.EAST);
 
         painelEditor.add(jPanel1, java.awt.BorderLayout.SOUTH);
 
@@ -181,50 +191,107 @@ public class MainWindow extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton2ActionPerformed
-    {//GEN-HEADEREND:event_jButton2ActionPerformed
+    private void btnCompilarActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_btnCompilarActionPerformed
+    {//GEN-HEADEREND:event_btnCompilarActionPerformed
         ANTLRInputStream ais = new ANTLRInputStream(emotesTextArea.getText());
         EmoteslangLexer lexer = new EmoteslangLexer(ais);
         CommonTokenStream stream = new CommonTokenStream(lexer);
         EmoteslangParser parser = new EmoteslangParser(stream);
-        
+
         DefaultListModel modeloLista = new DefaultListModel();
         listaMensagens.setModel(modeloLista);
-        
-        TratadorErrosLexico tratadorErrosLexico = new TratadorErrosLexico(modeloLista);
-        TratadorErrosSintatico tratadorErrosSintatico = new TratadorErrosSintatico(modeloLista);
 
+//        TratadorErrosLexico tratadorErrosLexico = new TratadorErrosLexico(modeloLista);
+//        TratadorErrosSintatico tratadorErrosSintatico = new TratadorErrosSintatico(modeloLista);
         // Remove o tratador de erros padrão do lexer e do parser
         lexer.removeErrorListeners();
         parser.removeErrorListeners();
 
         // Instala o tratador de erros personalizado que irá exibir as mensagens
         // em tela na JList
-        lexer.addErrorListener(tratadorErrosLexico);
-        parser.addErrorListener(tratadorErrosSintatico);
+//        lexer.addErrorListener(tratadorErrosLexico);
+//        parser.addErrorListener(tratadorErrosSintatico);
+        ErroLexico erroLexico = new ErroLexico();
+        lexer.addErrorListener(erroLexico);
+        parser.addErrorListener(erroLexico);
 
-        // Chama a regar inicial do parser, esta regra deve estar definida na gramática
-        parser.program();
-        
-        if (modeloLista.isEmpty()) {
-            modeloLista.addElement("Compilado com sucesso!");            
+        // Chama a regra inicial do parser, esta regra deve estar definida na gramática
+        ParseTree tree = parser.program();
+//        parser.program();
+
+//        if (modeloLista.isEmpty()) {
+        if (erroLexico.getErrors().isEmpty()) {          
+            modeloLista.addElement("Compilado com sucesso!");
+            EmotesSemanticVisitor visitor = new EmotesSemanticVisitor(new ArrayList<Identificador>());
+            try {
+                visitor.visit(tree);
+                ids = visitor.getTabelaSimbolos();
+                
+                
+                Tree parseTreeRoot = tree;
+                TreeNodeWrapper nodeRoot = new TreeNodeWrapper(parseTreeRoot);
+                fillTree(nodeRoot, parseTreeRoot);
+
+                JFrame frame = new JFrame("Árvore Sintática");
+                frame.setContentPane(new JScrollPane(new TreeViewer(Arrays.asList(parser.getRuleNames()), tree)));
+                frame.setPreferredSize(new Dimension(800, 600));
+                frame.pack();
+                frame.setLocationRelativeTo(null);
+                frame.setVisible(true);
+                
+                
+
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                
+                erroLexico.getErrors().add(e.getMessage());
+                modeloLista.addElement(e.getMessage());
+            }
+        } else {
+            for (String erro : erroLexico.getErrors()) {
+                modeloLista.addElement(erro);
+            }
         }
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_btnCompilarActionPerformed
 
+    private static class TreeNodeWrapper extends DefaultMutableTreeNode {
+
+        TreeNodeWrapper(Tree tree) {
+            super(tree);
+        }
+
+    }
+
+    private static void fillTree(TreeNodeWrapper node, Tree tree) {
+
+        if (tree == null) {
+            return;
+        }
+
+        for (int i = 0; i < tree.getChildCount(); i++) {
+
+            Tree childTree = tree.getChild(i);
+            TreeNodeWrapper childNode = new TreeNodeWrapper(childTree);
+
+            node.add(childNode);
+
+            fillTree(childNode, childTree);
+        }
+    }
     private void btnOpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOpenActionPerformed
-        
+
         JFileChooser filechooser = new JFileChooser("./code_samples");
         filechooser.setVisible(true);
-        
+
         if (filechooser.showOpenDialog(filechooser) == JFileChooser.APPROVE_OPTION) {
             File file = filechooser.getSelectedFile();
-            
+
             try {
                 String code = new String(Files.readAllBytes(file.toPath()));
                 emotesTextArea.setText(code);
-                
+
                 emotesTextArea.setCaretPosition(0);
-                
+
             } catch (IOException ex) {
                 Logger.getLogger(EmotesLang.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -234,7 +301,7 @@ public class MainWindow extends javax.swing.JFrame {
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
         JFileChooser filechooser = new JFileChooser("./code_samples");
         filechooser.showSaveDialog(this);
-        
+
         try (FileWriter fw = new FileWriter(filechooser.getSelectedFile() + ".txt")) {
             fw.write(emotesTextArea.getText());
         } catch (Exception e) {
@@ -242,10 +309,10 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSaveActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCompilar;
     private javax.swing.JMenuItem btnOpen;
     private javax.swing.JMenuItem btnSave;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JMenu jMenu1;

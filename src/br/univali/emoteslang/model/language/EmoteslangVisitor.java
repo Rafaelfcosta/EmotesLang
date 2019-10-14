@@ -1,6 +1,5 @@
 // Generated from .\Emoteslang.g4 by ANTLR 4.7.2
-package br.univali.emoteslang.model.visitor;
-import br.univali.emoteslang.model.language.EmoteslangParser;
+package br.univali.emoteslang.model.language;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
 /**
@@ -228,6 +227,18 @@ public interface EmoteslangVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitCondition(EmoteslangParser.ConditionContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link EmoteslangParser#array}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitArray(EmoteslangParser.ArrayContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link EmoteslangParser#matrix}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMatrix(EmoteslangParser.MatrixContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link EmoteslangParser#attribution}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -239,6 +250,12 @@ public interface EmoteslangVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitExpression(EmoteslangParser.ExpressionContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link EmoteslangParser#finalValue}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFinalValue(EmoteslangParser.FinalValueContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link EmoteslangParser#typeWithVoid}.
 	 * @param ctx the parse tree
