@@ -13,7 +13,7 @@ import java.util.List;
 
 /**
  *
- * @author rafae
+ * @author rafael
  */
 public abstract class EmotesVisitor extends EmoteslangBaseVisitor<Object>{
     

@@ -57,7 +57,7 @@ public class MainWindow extends javax.swing.JFrame {
 //        painelMsgs.setBackground(new Color(100,65,164));
 //        listaMensagens.setBackground(new Color(100,65,164));
         this.setSize(1024, 768);
-
+        
         emotesTextArea = new RSyntaxTextArea(20, 60);
 
         AbstractTokenMakerFactory atmf = (AbstractTokenMakerFactory) TokenMakerFactory.getDefaultInstance();
@@ -246,9 +246,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         // Chama a regra inicial do parser, esta regra deve estar definida na gramática
         ParseTree tree = parser.program();
-//        parser.program();
 
-//        if (modeloLista.isEmpty()) {
         if (erroLexico.getErrors().isEmpty()) {          
             modeloLista.addElement("Compilado com sucesso!");
             EmotesSemanticVisitor visitor = new EmotesSemanticVisitor(new ArrayList<Identificador>());

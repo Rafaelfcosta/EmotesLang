@@ -145,8 +145,6 @@ attribution
 expression
     : 
         ID LEFT_PARENTESIS expressionList? RIGHT_PARENTESIS
-    |   array
-    |   matrix
     |   ADD expression
     |   SUB expression
     |   NOT expression
@@ -184,6 +182,8 @@ finalValue:
     |   BOOLEAN
     |   CHAR
     |   STRING
+    |   array
+    |   matrix
     |   LEFT_PARENTESIS expression RIGHT_PARENTESIS
     ;
 
