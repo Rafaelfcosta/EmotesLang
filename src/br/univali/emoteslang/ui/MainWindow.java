@@ -20,12 +20,15 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import org.antlr.v4.gui.TreeViewer;
 import org.antlr.v4.runtime.ANTLRInputStream;
@@ -40,7 +43,7 @@ import org.fife.ui.rtextarea.RTextScrollPane;
 
 /**
  *
- * @author noschang
+ * @author rafael
  */
 public class MainWindow extends javax.swing.JFrame {
 
@@ -113,9 +116,13 @@ public class MainWindow extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         btnCompilar = new javax.swing.JButton();
         painelMsgs = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
+        jTabbedPane1 = new javax.swing.JTabbedPane();
+        tabMsgs = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         listaMensagens = new javax.swing.JList();
+        tabTable = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tabela = new javax.swing.JTable();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         btnOpen = new javax.swing.JMenuItem();
@@ -153,12 +160,34 @@ public class MainWindow extends javax.swing.JFrame {
 
         painelMsgs.setLayout(new java.awt.BorderLayout());
 
-        jLabel2.setText("Mensagens:");
-        painelMsgs.add(jLabel2, java.awt.BorderLayout.PAGE_START);
+        tabMsgs.setLayout(new java.awt.BorderLayout());
 
         jScrollPane2.setViewportView(listaMensagens);
 
-        painelMsgs.add(jScrollPane2, java.awt.BorderLayout.CENTER);
+        tabMsgs.add(jScrollPane2, java.awt.BorderLayout.CENTER);
+
+        jTabbedPane1.addTab("Mensagens", tabMsgs);
+
+        tabTable.setLayout(new java.awt.BorderLayout());
+
+        tabela.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane1.setViewportView(tabela);
+
+        tabTable.add(jScrollPane1, java.awt.BorderLayout.CENTER);
+
+        jTabbedPane1.addTab("Tabela", tabTable);
+
+        painelMsgs.add(jTabbedPane1, java.awt.BorderLayout.CENTER);
 
         jSplitPane1.setRightComponent(painelMsgs);
 
@@ -227,6 +256,16 @@ public class MainWindow extends javax.swing.JFrame {
                 visitor.visit(tree);
                 ids = visitor.getTabelaSimbolos();
                 
+                jTabbedPane1.setSelectedIndex(1);
+                
+                tabela.setModel(getModel(ids));
+                tabela.setDefaultEditor(Object.class, null);
+                
+                for (Identificador id : ids) {
+                    System.out.println(id.getNome() + " " + id.getEscopo()+ " " + id.getTipo()+ " " + 
+                            id.getQtdArmazenada()+ " " + id.getDimensoes()+ " " + id.getPosicaoParametro());
+                }
+                
                 
                 Tree parseTreeRoot = tree;
                 TreeNodeWrapper nodeRoot = new TreeNodeWrapper(parseTreeRoot);
@@ -253,7 +292,46 @@ public class MainWindow extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_btnCompilarActionPerformed
-
+    
+    private TableModel getModel(List<Identificador> ids)
+    {
+        DefaultTableModel tm = new DefaultTableModel();
+        tm.addColumn("nome");
+        tm.addColumn("tipo");
+        tm.addColumn("inicializada");
+        tm.addColumn("usada");
+        tm.addColumn("escopo");
+        tm.addColumn("parametro");
+        tm.addColumn("referencia");
+        tm.addColumn("posicaoParametro");
+        tm.addColumn("dimensões");
+        tm.addColumn("função");
+        for (Identificador id : ids)
+        {
+            Vector vector = new Vector();
+            vector.add(id.getNome());
+            vector.add(id.getTipo());
+            vector.add(id.isInicializada());
+            if(!id.isInicializada()){
+//                this.warnings.add("Variável " + id.getNome() + " no escopo " + id.getEscopo() + " não foi inicializada");
+            }else{
+                if(!id.isUsada()){
+                    String funcaoVar = (id.isFuncao()) ? "Função " : "Variável ";
+//                    this.warnings.add(funcaoVar + id.getNome() + " no escopo " + id.getEscopo() + " não foi utilizada");
+                }
+            }
+            vector.add(id.isUsada());
+            vector.add(id.getEscopo());
+            vector.add(id.isParametro());
+            vector.add(id.isReferencia());
+            vector.add(id.getPosicaoParametro());
+            vector.add(id.getDimensoes());
+            vector.add(id.isFuncao());
+            tm.addRow(vector);
+        }
+        return tm;
+    }
+    
     private static class TreeNodeWrapper extends DefaultMutableTreeNode {
 
         TreeNodeWrapper(Tree tree) {
@@ -314,15 +392,19 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JMenuItem btnSave;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSplitPane jSplitPane1;
+    private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JList listaMensagens;
     private javax.swing.JPanel painelEditor;
     private javax.swing.JPanel painelMsgs;
+    private javax.swing.JPanel tabMsgs;
+    private javax.swing.JPanel tabTable;
+    private javax.swing.JTable tabela;
     // End of variables declaration//GEN-END:variables
 }

@@ -15,15 +15,25 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 
 /**
  *
- * @author rafae
+ * @author rafael
  */
 public class EmotesSemanticVisitor extends EmotesVisitor {
+
+    int contEscopo = 1;
 
     public EmotesSemanticVisitor(List<Identificador> tabelaSimbolos) {
         super(tabelaSimbolos);
     }
 
     public List<Identificador> getTabelaSimbolos() {
+        return tabelaSimbolos;
+    }
+
+    @Override
+    public Object visitProgram(EmoteslangParser.ProgramContext ctx) {
+        escopoAtual = new Escopo("programa");
+        markAllFunctions(ctx);
+        visitChildren(ctx);
         return tabelaSimbolos;
     }
 
@@ -63,7 +73,10 @@ public class EmotesSemanticVisitor extends EmotesVisitor {
             throw new ParseCancellationException("Váriavel " + ctx.ATTRIBUTION() + " não existe neste escopo Linha: " + ctx.start.getLine() + " Coluna: " + ctx.start.getCharPositionInLine());
         }
 
-        return super.visitAttribution(ctx); //To change body of generated methods, choose Tools | Templates.
+        if ((ctx.expression().UN_ADD() != null || ctx.expression().UN_SUB() != null) && !id.isInicializada()) {
+            throw new ParseCancellationException("Váriavel " + ctx.ID() + " não inicializada Linha: " + ctx.start.getLine() + " Coluna: " + ctx.start.getCharPositionInLine());
+        }
+        return null;
     }
 
     @Override
@@ -88,27 +101,92 @@ public class EmotesSemanticVisitor extends EmotesVisitor {
 
     @Override
     public Object visitCommands(EmoteslangParser.CommandsContext ctx) {
-        return super.visitCommands(ctx); //To change body of generated methods, choose Tools | Templates.
+        visitChildren(ctx);
+        return null;
     }
 
     @Override
     public Object visitCondition(EmoteslangParser.ConditionContext ctx) {
-        return super.visitCondition(ctx); //To change body of generated methods, choose Tools | Templates.
+        visitChildren(ctx);
+        return null;
     }
 
     @Override
     public Object visitConditionals(EmoteslangParser.ConditionalsContext ctx) {
-        return super.visitConditionals(ctx); //To change body of generated methods, choose Tools | Templates.
+        visitChildren(ctx);
+        return null;
     }
 
     @Override
     public Object visitDeclaration(EmoteslangParser.DeclarationContext ctx) {
-        return super.visitDeclaration(ctx); //To change body of generated methods, choose Tools | Templates.
+        visitChildren(ctx);
+        return null;
+    }
+
+    @Override
+    public Object visitStatements(EmoteslangParser.StatementsContext ctx) {
+        visitType(ctx.type());
+//        for (EmoteslangParser.DeclarationContext declarationContext : ctx.declaration()) {
+//            multidimensional = 0;
+//            qtdMultidimensional = 1;
+//            TerminalNode id = declarationContext.declarationVar().ID();
+//            System.out.println(id);
+//        }
+        visitChildren(ctx);
+        return null;
     }
 
     @Override
     public Object visitDeclarationArray(EmoteslangParser.DeclarationArrayContext ctx) {
-        return super.visitDeclarationArray(ctx); //To change body of generated methods, choose Tools | Templates.
+        multidimensional = 1;
+        qtdMultidimensional = 1;
+        String item = "1";
+        if(ctx.arraySize().INT() != null){
+            item = ctx.arraySize().INT().getText();
+        }       
+        qtdMultidimensional *= Integer.parseInt(item);
+
+        TerminalNode id = ctx.ID();
+
+        boolean inicializada;
+        if (ctx.ATTRIBUTION() != null) {
+            inicializada = true;
+        } else {
+            inicializada = false;
+        }
+        if (Escopo.verificaSeExisteNoEscopo(id.getSymbol().getText(), tabelaSimbolos, escopoAtual)) {
+            throw new ParseCancellationException("Declaração de Váriavel " + ctx.ID() + " já existe neste escopo Linha: " + ctx.start.getLine() + " Coluna: " + ctx.start.getCharPositionInLine());
+        }
+
+        Identificador ident = new Identificador(
+                id.getSymbol().getText(),
+                tipoAtual,
+                inicializada,
+                false,
+                escopoAtual,
+                false,
+                false,
+                0,
+                multidimensional,
+                qtdMultidimensional,
+                false);
+        tabelaSimbolos.add(ident);
+        visitChildren(ctx);
+        System.out.println(ident.getTipo());
+        if (inicializada) {
+//            System.out.println("DEVE VERIFICAR OS TIPOS AQUI");
+//            verificarCompatibilidadeAtribuicao(ident.getTipo(), ctx);;
+        }
+        return null;
+    }
+
+    @Override
+    public Object visitParamArray(EmoteslangParser.ParamArrayContext ctx) {
+        multidimensional = 1;
+        qtdMultidimensional = 1;
+        String item = ctx.expression().getText();
+        qtdMultidimensional *= Integer.parseInt(item);
+        return null;
     }
 
     @Override
@@ -118,7 +196,40 @@ public class EmotesSemanticVisitor extends EmotesVisitor {
 
     @Override
     public Object visitDeclarationVar(EmoteslangParser.DeclarationVarContext ctx) {
-        return super.visitDeclarationVar(ctx); //To change body of generated methods, choose Tools | Templates.
+        multidimensional = 0;
+        qtdMultidimensional = 1;
+        TerminalNode id = ctx.ID();
+
+        boolean inicializada;
+        if (ctx.ATTRIBUTION() != null) {
+            inicializada = true;
+        } else {
+            inicializada = false;
+        }
+        if (Escopo.verificaSeExisteNoEscopo(id.getSymbol().getText(), tabelaSimbolos, escopoAtual)) {
+            throw new ParseCancellationException("Declaração de Váriavel " + ctx.ID() + " já existe neste escopo Linha: " + ctx.start.getLine() + " Coluna: " + ctx.start.getCharPositionInLine());
+        }
+
+        Identificador ident = new Identificador(
+                id.getSymbol().getText(),
+                tipoAtual,
+                inicializada,
+                false,
+                escopoAtual,
+                false,
+                false,
+                0,
+                multidimensional,
+                qtdMultidimensional,
+                false);
+        tabelaSimbolos.add(ident);
+        visitChildren(ctx);
+        System.out.println(ident.getTipo());
+        if (inicializada) {
+//            System.out.println("DEVE VERIFICAR OS TIPOS AQUI");
+//            verificarCompatibilidadeAtribuicao(ident.getTipo(), ctx);;
+        }
+        return null;
     }
 
     @Override
@@ -143,17 +254,31 @@ public class EmotesSemanticVisitor extends EmotesVisitor {
 
     @Override
     public Object visitIfdes(EmoteslangParser.IfdesContext ctx) {
-        return super.visitIfdes(ctx); //To change body of generated methods, choose Tools | Templates.
+        escopoAtual = Escopo.criaEVaiEscopoNovo("if_" + contEscopo++, escopoAtual);
+        visitChildren(ctx);
+        retornaEscopoPai();
+        return null;
+    }
+
+    @Override
+    public Object visitIfdeselse(EmoteslangParser.IfdeselseContext ctx) {
+        escopoAtual = Escopo.criaEVaiEscopoNovo("else_" + contEscopo++, escopoAtual);
+        visitChildren(ctx);
+        retornaEscopoPai();
+        return null;
+    }
+
+    @Override
+    public Object visitIfdeselseif(EmoteslangParser.IfdeselseifContext ctx) {
+        escopoAtual = Escopo.criaEVaiEscopoNovo("else_if_" + contEscopo++, escopoAtual);
+        visitChildren(ctx);
+        retornaEscopoPai();
+        return null;
     }
 
     @Override
     public Object visitExpressionList(EmoteslangParser.ExpressionListContext ctx) {
         return super.visitExpressionList(ctx); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Object visitIfdeselseif(EmoteslangParser.IfdeselseifContext ctx) {
-        return super.visitIfdeselseif(ctx); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -192,16 +317,6 @@ public class EmotesSemanticVisitor extends EmotesVisitor {
     }
 
     @Override
-    public Object visitParamArray(EmoteslangParser.ParamArrayContext ctx) {
-//        multidimensional = ctx.LEFT_SBRACKET();
-        qtdMultidimensional = 1;
-        for (int i = 0; i < multidimensional; i++) {
-//            qtdMultidimensional *= Integer.parseInt(item);
-        }
-        return null;
-    }
-
-    @Override
     public Object visitParamMatrix(EmoteslangParser.ParamMatrixContext ctx) {
         return super.visitParamMatrix(ctx); //To change body of generated methods, choose Tools | Templates.
     }
@@ -218,17 +333,17 @@ public class EmotesSemanticVisitor extends EmotesVisitor {
 
     @Override
     public Object visitParametersList(EmoteslangParser.ParametersListContext ctx) {
-        for(int i = 0; i< ctx.parameter().size(); i++){
+        for (int i = 0; i < ctx.parameter().size(); i++) {
             String idName = ctx.parameter(i).ID().getSymbol().getText();
-            if(Escopo.verificaSeExisteNoEscopo(idName, tabelaSimbolos, escopoAtual)){
+            if (Escopo.verificaSeExisteNoEscopo(idName, tabelaSimbolos, escopoAtual)) {
                 throw new ParseCancellationException("Declaração de Váriavel " + idName + " já existe neste escopo Linha: " + ctx.start.getLine() + " Coluna: " + ctx.start.getCharPositionInLine());
             }
             multidimensional = 0;
             qtdMultidimensional = 1;
-            if(ctx.parameter(i).paramArray() != null){
+            if (ctx.parameter(i).paramArray() != null) {
                 visitParamArray(ctx.parameter(i).paramArray());
             }
-            
+
             visitType(ctx.parameter(i).type());
             Identificador id = new Identificador(
                     idName,
@@ -239,36 +354,17 @@ public class EmotesSemanticVisitor extends EmotesVisitor {
                     true,
                     ctx.parameter(i).BIT_AND() != null,
                     i + 1,
-                    multidimensional, // Só aceita unidimensional como parametro... 
+                    qtdMultidimensional, // Só aceita unidimensional como parametro... 
                     false);
             tabelaSimbolos.add(id);
         }
-        return null;
-    }
 
-    @Override
-    public Object visitProgram(EmoteslangParser.ProgramContext ctx) {
-        escopoAtual = new Escopo("programa");
-        markAllFunctions(ctx);
-        visitChildren(ctx);
-        return tabelaSimbolos;
+        return null;
     }
 
     @Override
     public Object visitReturndes(EmoteslangParser.ReturndesContext ctx) {
         return super.visitReturndes(ctx); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Object visitStatements(EmoteslangParser.StatementsContext ctx) {
-        visitType(ctx.type());
-        for (EmoteslangParser.DeclarationContext declarationContext : ctx.declaration()) {
-            multidimensional = 0;
-            qtdMultidimensional = 1;
-            TerminalNode id = declarationContext.declarationVar().ID();
-            System.out.println(id);
-        }
-        return super.visitStatements(ctx); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -310,12 +406,8 @@ public class EmotesSemanticVisitor extends EmotesVisitor {
     private void markAllFunctions(EmoteslangParser.ProgramContext ctxProg) {
         List<EmoteslangParser.FunctionsContext> fctx = ctxProg.functions();
         for (EmoteslangParser.FunctionsContext ctx : fctx) {
-//            while (ctx.ID() != null) {
             visitTypeWithVoid(ctx.typeWithVoid());
-            System.out.println(ctx.ID().getSymbol().getText());
             if (Escopo.verificaSeExisteNoEscopo(ctx.ID().getSymbol().getText(), tabelaSimbolos, escopoAtual)) {
-//                this.semanticErrors.add(new ParseCancellationException("Declaração da Função " + ctx.ID().getSymbol().getText() + " já existe neste escopo Linha: " + ctx.start.getLine() + " Coluna: " + ctx.start.getCharPositionInLine()));;
-//                throw new ParseCancellationException("Declaração de Funcao " + ctx.ID().getSymbol().getText() + " já existe neste escopo Linha: " + ctx.start.getLine() + " Coluna: " + ctx.start.getCharPositionInLine());;
                 throw new ParseCancellationException("Declaração de Função " + ctx.ID().getSymbol().getText() + " já existe neste escopo Linha: " + ctx.start.getLine() + " Coluna: " + ctx.start.getCharPositionInLine());
             }
             boolean usada = false;
@@ -336,7 +428,9 @@ public class EmotesSemanticVisitor extends EmotesVisitor {
             tabelaSimbolos.add(id);
 
             escopoAtual = Escopo.criaEVaiEscopoNovo(ctx.ID().getText(), escopoAtual);
-//            visitParametersList(ctx.parametersList());
+            if (ctx.parametersList() != null) {
+                visitParametersList(ctx.parametersList());
+            }
             retornaEscopoPai();
         }
     }

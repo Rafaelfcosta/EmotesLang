@@ -238,6 +238,16 @@ public interface EmoteslangListener extends ParseTreeListener {
 	 */
 	void exitIfdes(EmoteslangParser.IfdesContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link EmoteslangParser#ifdeselse}.
+	 * @param ctx the parse tree
+	 */
+	void enterIfdeselse(EmoteslangParser.IfdeselseContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link EmoteslangParser#ifdeselse}.
+	 * @param ctx the parse tree
+	 */
+	void exitIfdeselse(EmoteslangParser.IfdeselseContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link EmoteslangParser#ifdeselseif}.
 	 * @param ctx the parse tree
 	 */

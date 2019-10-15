@@ -43,19 +43,19 @@ public class ErroLexico implements ANTLRErrorListener {
 
     @Override
     public void reportAmbiguity(Parser parser, DFA dfa, int i, int i1, boolean bln, BitSet bitset, ATNConfigSet atncs) {
-        System.out.println("reportAmbiguity");
+//        System.out.println("reportAmbiguity");
 //        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public void reportAttemptingFullContext(Parser parser, DFA dfa, int i, int i1, BitSet bitset, ATNConfigSet atncs) {
 //        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.;
-        System.out.println("reportAttemptingFullContext");
+//        System.out.println("reportAttemptingFullContext");
     }
 
     @Override
     public void reportContextSensitivity(Parser parser, DFA dfa, int i, int i1, int i2, ATNConfigSet atncs) {
-        System.out.println("reportContextSensitivity");
+//        System.out.println("reportContextSensitivity");
 //        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

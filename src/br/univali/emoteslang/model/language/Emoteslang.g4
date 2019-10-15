@@ -18,13 +18,13 @@ declarationVar
     : ID (ATTRIBUTION expression)?;
 
 declarationMatrix
-    : ID LEFT_SBRACKET matrixLine? RIGHT_SBRACKET LEFT_SBRACKET matrixCol? RIGHT_SBRACKET (ATTRIBUTION initializeMatrix)?;
+    : ID LEFT_SBRACKET matrixLine RIGHT_SBRACKET LEFT_SBRACKET matrixCol RIGHT_SBRACKET (ATTRIBUTION initializeMatrix)?;
 
 initializeMatrix
     : LEFT_CBRACKETS initializeArray (',' initializeArray)* RIGHT_CBRACKETS;
 
 declarationArray
-    : ID LEFT_SBRACKET arraySize? RIGHT_SBRACKET (ATTRIBUTION initializeArray)?;
+    : ID LEFT_SBRACKET arraySize RIGHT_SBRACKET (ATTRIBUTION initializeArray)?;
 
 initializeArray
     : LEFT_CBRACKETS expressionList? RIGHT_CBRACKETS;
@@ -52,10 +52,10 @@ parameter
     : type BIT_AND? ID (paramArray | paramMatrix)?;
 
 paramArray
-    : LEFT_SBRACKET RIGHT_SBRACKET;
+    : LEFT_SBRACKET expression RIGHT_SBRACKET;
 
 paramMatrix
-    : LEFT_SBRACKET RIGHT_SBRACKET LEFT_SBRACKET RIGHT_SBRACKET;
+    : LEFT_SBRACKET expression RIGHT_SBRACKET LEFT_SBRACKET expression RIGHT_SBRACKET;
 
 inputAndOutput: (READ | WRITE) LEFT_PARENTESIS parametersCall RIGHT_PARENTESIS;
 
@@ -85,7 +85,10 @@ conditionals
     ;
 
 ifdes
-    : IF LEFT_PARENTESIS expression RIGHT_PARENTESIS commandList (ELSE commandList | ifdeselseif )?;
+    : IF LEFT_PARENTESIS expression RIGHT_PARENTESIS commandList (ifdeselse | ifdeselseif )?;
+
+ifdeselse
+    : ELSE commandList;
 
 ifdeselseif
     : ELSEIF ifdes;

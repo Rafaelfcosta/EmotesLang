@@ -149,6 +149,12 @@ public interface EmoteslangVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitIfdes(EmoteslangParser.IfdesContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link EmoteslangParser#ifdeselse}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIfdeselse(EmoteslangParser.IfdeselseContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link EmoteslangParser#ifdeselseif}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
