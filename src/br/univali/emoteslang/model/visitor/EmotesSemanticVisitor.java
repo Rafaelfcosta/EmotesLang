@@ -60,11 +60,11 @@ public class EmotesSemanticVisitor extends EmotesVisitor {
         if (ctx == null) {
             return null;
         }
-        this.pilhaTipoExpressao.clear();
-        
-        if(ctx.finalValue().LEFT_PARENTESIS() != null){
-//            this.pilhaTipoExpressao.push(?);
-        }
+//        this.pilhaTipoExpressao.clear();
+//        
+//        if(ctx.finalValue().LEFT_PARENTESIS() != null){
+////            this.pilhaTipoExpressao.push(?);
+//        }
         
         for (int i = 0; i < ctx.expression().size(); i++) {
             if (ctx.expression(i).finalValue().ID() != null) {
@@ -85,7 +85,7 @@ public class EmotesSemanticVisitor extends EmotesVisitor {
                 } else {
                     id.setUsada(true);
                     
-                    this.pilhaTipoExpressao.push(id.getTipo());
+//                    this.pilhaTipoExpressao.push(id.getTipo());
                     
                     return null;
                 }
@@ -163,7 +163,7 @@ public class EmotesSemanticVisitor extends EmotesVisitor {
             }
         } else {
             visitExpression(ctx.expression());
-            verificarCompatibilidadeAtribuicao(id.getTipo(), ctx);
+//            verificarCompatibilidadeAtribuicao(id.getTipo(), ctx);
         }
 
         id.setUsada(true);
@@ -316,8 +316,8 @@ public class EmotesSemanticVisitor extends EmotesVisitor {
         visitChildren(ctx);
         System.out.println(ident.getTipo());
         if (inicializada) {
-            System.out.println("verif compatibilidade");
-            verificarCompatibilidadeAtribuicao(ident.getTipo(), ctx);
+//            System.out.println("verif compatibilidade");
+//            verificarCompatibilidadeAtribuicao(ident.getTipo(), ctx);
         }
         return null;
     }
@@ -358,12 +358,17 @@ public class EmotesSemanticVisitor extends EmotesVisitor {
             visitCommands(ctx.commands(i));
         }
                 
-        if(ctx.typeWithVoid().type() != null && !temRetorno && !ctx.ID().getText().equals("main")){
-            throw new ParseCancellationException("Funcao "+ctx.ID().getText()+" não tem retorno necessário");
-        }
+//        if(ctx.typeWithVoid().type() != null && !temRetorno && !ctx.ID().getSymbol().getText().equals("main")){
+//            throw new ParseCancellationException("Funcao "+ctx.ID().getText()+" não tem retorno necessário");
+//        }
         temRetorno = false; 
         retornaEscopoPai();
         return null;
+    }
+    
+    @Override
+    public Object visitReturndes(EmoteslangParser.ReturndesContext ctx) {
+        return super.visitReturndes(ctx); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -469,33 +474,33 @@ public class EmotesSemanticVisitor extends EmotesVisitor {
             qtdParametrosNaFuncao = 0;
         }
         
-        List<Tipo> tiposParam = new ArrayList<>();    
-        for(EmoteslangParser.ExpressionContext expressionContext : ctx.expressionList().expression()){
+//        List<Tipo> tiposParam = new ArrayList<>();    
+//        for(EmoteslangParser.ExpressionContext expressionContext : ctx.expressionList().expression()){
 //            tiposParam.add(visitExpressaoLoop(expressionContext));
-            visitExpression(expressionContext);
-        }
+//            visitExpression(expressionContext);
+//        }
         
-        int qtdParametrosChamada = ctx.expressionList().expression().size();
-        
-        //Valida se os numeros de parametros bate
-        if (qtdParametrosChamada != qtdParametrosNaFuncao) {
-            throw new ParseCancellationException("Chamada de função na linha " + ctx.start.getLine() + " coluna " + ctx.start.getCharPositionInLine() + " com numero incorreto de parametros. Esperado: " + qtdParametrosNaFuncao + " Encontrado: " + qtdParametrosChamada);
-        }
-        //verifica os tipos dos parametros das funcoes
-        if(idListParametros!=null && !tiposParam.isEmpty())
-        {
-            Iterator<Tipo> expIte = tiposParam.iterator();
-            Iterator<Identificador> paramIte = idListParametros.iterator();
-            while(expIte.hasNext() && paramIte.hasNext())
-            {
-                Identificador parametroFuncao = paramIte.next();
-                Tipo tipoParametroChamada = expIte.next();
-                if(parametroFuncao.getTipo() != tipoParametroChamada)
-                {
-//                    this.semanticErrors.add(new ParseCancellationException("Chamada de função na linha " + ctx.start.getLine() + " coluna " + ctx.start.getCharPositionInLine() + " está com parametros com tipos incorretos Esperado: "+parametroFuncao.getTipo().name()+" Recebido: "+tipoParametroChamada.name()));
-                }
-            }
-        }
+//        int qtdParametrosChamada = ctx.expressionList().expression().size();
+//        
+//        //Valida se os numeros de parametros bate
+//        if (qtdParametrosChamada != qtdParametrosNaFuncao) {
+//            throw new ParseCancellationException("Chamada de função na linha " + ctx.start.getLine() + " coluna " + ctx.start.getCharPositionInLine() + " com numero incorreto de parametros. Esperado: " + qtdParametrosNaFuncao + " Encontrado: " + qtdParametrosChamada);
+//        }
+//        //verifica os tipos dos parametros das funcoes
+//        if(idListParametros!=null && !tiposParam.isEmpty())
+//        {
+//            Iterator<Tipo> expIte = tiposParam.iterator();
+//            Iterator<Identificador> paramIte = idListParametros.iterator();
+//            while(expIte.hasNext() && paramIte.hasNext())
+//            {
+//                Identificador parametroFuncao = paramIte.next();
+//                Tipo tipoParametroChamada = expIte.next();
+//                if(parametroFuncao.getTipo() != tipoParametroChamada)
+//                {
+////                    this.semanticErrors.add(new ParseCancellationException("Chamada de função na linha " + ctx.start.getLine() + " coluna " + ctx.start.getCharPositionInLine() + " está com parametros com tipos incorretos Esperado: "+parametroFuncao.getTipo().name()+" Recebido: "+tipoParametroChamada.name()));
+//                }
+//            }
+//        }
         visitChildren(ctx);
         return null;
 
@@ -534,11 +539,6 @@ public class EmotesSemanticVisitor extends EmotesVisitor {
     }
 
     @Override
-    public Object visitReturndes(EmoteslangParser.ReturndesContext ctx) {
-        return super.visitReturndes(ctx); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public Object visitSwitchdes(EmoteslangParser.SwitchdesContext ctx) {
         return super.visitSwitchdes(ctx); //To change body of generated methods, choose Tools | Templates.
     }
@@ -563,7 +563,7 @@ public class EmotesSemanticVisitor extends EmotesVisitor {
             tipoAtual = Tipo.BINARIO;
         } else if (ctx.TP_BOOL() != null) {
             tipoAtual = Tipo.LOGICO;
-        } else if (ctx.TP_DOUBLE() != null) {
+        } else if (ctx.TP_DOUBLE() != null ||ctx.TP_FLOAT() != null) {
             tipoAtual = Tipo.REAL;
         } else if (ctx.TP_HEX() != null) {
             tipoAtual = Tipo.HEXADECIMAL;
