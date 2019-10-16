@@ -198,6 +198,16 @@ public interface EmoteslangListener extends ParseTreeListener {
 	 */
 	void exitParametersCall(EmoteslangParser.ParametersCallContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link EmoteslangParser#functionCall}.
+	 * @param ctx the parse tree
+	 */
+	void enterFunctionCall(EmoteslangParser.FunctionCallContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link EmoteslangParser#functionCall}.
+	 * @param ctx the parse tree
+	 */
+	void exitFunctionCall(EmoteslangParser.FunctionCallContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link EmoteslangParser#commands}.
 	 * @param ctx the parse tree
 	 */

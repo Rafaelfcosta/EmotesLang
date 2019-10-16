@@ -125,6 +125,12 @@ public interface EmoteslangVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitParametersCall(EmoteslangParser.ParametersCallContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link EmoteslangParser#functionCall}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFunctionCall(EmoteslangParser.FunctionCallContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link EmoteslangParser#commands}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

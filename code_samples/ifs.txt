@@ -4,27 +4,27 @@ HeyGuys
 		Kappa
 			pikaHi P( 1 > 2 )G 
 			Kappa
-			
+				int a
 			KappaPride
 			pikaOH pikaHi P( 2 < 3 )G  
 			Kappa
-			
+				int b
 			KappaPride
 			pikaOH pikaHi P( CoolCat && CoolCat )G  
 			Kappa
-			
+				int c
 			KappaPride
-			pikaOH pikaHi P( NotLikeThis CoolCat || CoolCat )G  
+			pikaOH pikaHi P(  P( NotLikeThis CoolCat )G || CoolCat )G  
 			Kappa
-			
+				int d
 			KappaPride
 			pikaOH pikaHi P( CoolCat )G  
 			Kappa
-			
+				int e
 			KappaPride
 			seaPika
 			Kappa
-			
+				int f
 			KappaPride
 		KappaPride
     KappaPride

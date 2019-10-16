@@ -9,7 +9,11 @@ import br.univali.emoteslang.model.analise.Escopo;
 import br.univali.emoteslang.model.analise.Identificador;
 import br.univali.emoteslang.model.analise.Identificador.Tipo;
 import br.univali.emoteslang.model.language.EmoteslangParser;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Stack;
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
@@ -19,6 +23,8 @@ import org.antlr.v4.runtime.tree.TerminalNode;
  */
 public class EmotesSemanticVisitor extends EmotesVisitor {
 
+    Stack<Identificador.Tipo> pilhaTipoExpressao = new Stack<>();
+    Stack<Operation> pilhaOperacao = new Stack<>();
     boolean temRetorno = false;
     Tipo tipoFuncao = null;
     int contEscopo = 1;
@@ -54,32 +60,73 @@ public class EmotesSemanticVisitor extends EmotesVisitor {
         if (ctx == null) {
             return null;
         }
+        this.pilhaTipoExpressao.clear();
+        
+        if(ctx.finalValue().LEFT_PARENTESIS() != null){
+//            this.pilhaTipoExpressao.push(?);
+        }
+        
         for (int i = 0; i < ctx.expression().size(); i++) {
             if (ctx.expression(i).finalValue().ID() != null) {
-
-                Identificador id = Identificador.getId(ctx.finalValue().ID().getSymbol().getText(), tabelaSimbolos, escopoAtual);
-                if (ctx.finalValue().array() != null) {
-                    visitArray(ctx.finalValue().array());
+                TerminalNode ID = ctx.expression(i).finalValue().ID();
+                String text = ID.getText();
+                Identificador id = Identificador.getId(text, tabelaSimbolos, escopoAtual);
+                if (ctx.expression(i).finalValue().array() != null) {
+                    visitArray(ctx.expression(i).finalValue().array());
                 } else {
                     multidimensional = 0;
                 }
                 if (id == null) {
-                    throw new ParseCancellationException("Váriavel " + ctx.finalValue().ID() + " não existe neste escopo Linha: " + ctx.start.getLine() + " Coluna: " + ctx.start.getCharPositionInLine());
+                    throw new ParseCancellationException("Váriavel " + ctx.expression(i).finalValue().ID() + " não existe neste escopo Linha: " + ctx.start.getLine() + " Coluna: " + ctx.start.getCharPositionInLine());
                 } else if (!id.isInicializada()) {
-                    throw new ParseCancellationException("Váriavel " + ctx.finalValue().ID() + " não inicializada Linha: " + ctx.start.getLine() + " Coluna: " + ctx.start.getCharPositionInLine());
+                    throw new ParseCancellationException("Váriavel " + ctx.expression(i).finalValue().ID() + " não inicializada Linha: " + ctx.start.getLine() + " Coluna: " + ctx.start.getCharPositionInLine());
                 } else if (id.getDimensoes() != multidimensional) {
-                    throw new ParseCancellationException("Dimensões incorreta do vetor " + ctx.finalValue().ID() + " . Ele possui " + id.getDimensoes() + " dimensões e foi usada " + multidimensional + " Linha: " + ctx.start.getLine() + " Coluna: " + ctx.start.getCharPositionInLine());
+                    throw new ParseCancellationException("Dimensões incorreta do vetor " + ctx.expression(i).finalValue().ID() + " . Ele possui " + id.getDimensoes() + " dimensões e foi usada " + multidimensional + " Linha: " + ctx.start.getLine() + " Coluna: " + ctx.start.getCharPositionInLine());
                 } else {
                     id.setUsada(true);
+                    
+                    this.pilhaTipoExpressao.push(id.getTipo());
+                    
                     return null;
                 }
             }
         }
+//        verificarCompatibilidadeOperacao(ctx, this.pilhaTipoExpressao, this.pilhaOperacao);
 //        visitChildren(ctx);
 
         return null;
     }
+    
+    public void verificarCompatibilidadeOperacao(EmoteslangParser.ExpressionContext ctx, Stack<Tipo> pilhaTipoExpressao, Stack<Operation> pilhaOperacao){
+        if(pilhaOperacao.empty() || pilhaTipoExpressao.size() != pilhaOperacao.size() + 1){
+            
+            return;
+        }
+        int resultExp;
+        Tipo tipo1, tipo2;
+        Operation op;
+        while(!pilhaOperacao.empty()) {
+            tipo1 = pilhaTipoExpressao.pop();
+            tipo2 = pilhaTipoExpressao.pop();
+            
+            op = pilhaOperacao.pop();
+            int resulExp = SemanticTable.resultType(tipo1, tipo2, op);
+            if(resulExp == SemanticTable.ERR){
+                throw new ParseCancellationException("Tentando realizar uma " + op.name() + " entre " + tipo1.name() + " e " + tipo2.name() + " na linha " + ctx.start.getLine());
+            }
+            pilhaTipoExpressao.push(SemanticTable.getCodeType(resulExp));
+        }
+    }
 
+    @Override
+    public Object visitArray(EmoteslangParser.ArrayContext ctx) {
+        multidimensional = 1;
+        qtdMultidimensional = 1;
+        String item = ctx.arrayIndex().expression().getText();
+        qtdMultidimensional *= Integer.parseInt(item);
+        return null;
+    }
+    
     @Override
     public Object visitArrayIndex(EmoteslangParser.ArrayIndexContext ctx) {
         return super.visitArrayIndex(ctx); //To change body of generated methods, choose Tools | Templates.
@@ -116,7 +163,7 @@ public class EmotesSemanticVisitor extends EmotesVisitor {
             }
         } else {
             visitExpression(ctx.expression());
-            //verif compatibilidade aqui
+            verificarCompatibilidadeAtribuicao(id.getTipo(), ctx);
         }
 
         id.setUsada(true);
@@ -162,7 +209,7 @@ public class EmotesSemanticVisitor extends EmotesVisitor {
 
     @Override
     public Object visitConditionals(EmoteslangParser.ConditionalsContext ctx) {
-        visitChildren(ctx);
+        visitChildren(ctx);       
         return null;
     }
 
@@ -269,8 +316,8 @@ public class EmotesSemanticVisitor extends EmotesVisitor {
         visitChildren(ctx);
         System.out.println(ident.getTipo());
         if (inicializada) {
-//            System.out.println("DEVE VERIFICAR OS TIPOS AQUI");
-//            verificarCompatibilidadeAtribuicao(ident.getTipo(), ctx);;
+            System.out.println("verif compatibilidade");
+            verificarCompatibilidadeAtribuicao(ident.getTipo(), ctx);
         }
         return null;
     }
@@ -282,9 +329,12 @@ public class EmotesSemanticVisitor extends EmotesVisitor {
 
     @Override
     public Object visitDoWhile(EmoteslangParser.DoWhileContext ctx) {
-        return super.visitDoWhile(ctx); //To change body of generated methods, choose Tools | Templates.
+        escopoAtual = Escopo.criaEVaiEscopoNovo("doWhile_" + contEscopo++, escopoAtual);
+        visitChildren(ctx);
+        retornaEscopoPai();
+        return null;
     }
-
+      
     @Override
     public Object visitFordes(EmoteslangParser.FordesContext ctx) {
         escopoAtual = Escopo.criaEVaiEscopoNovo("for_" + contEscopo++, escopoAtual);       
@@ -292,24 +342,26 @@ public class EmotesSemanticVisitor extends EmotesVisitor {
         retornaEscopoPai();
         return null;
     }
-
+    
     @Override
     public Object visitFunctions(EmoteslangParser.FunctionsContext ctx) {
         if (ctx.ID() == null) {
             return null;
         }
         escopoAtual = getEscopoDaFuncao(ctx.ID().getText());
+        
         if (ctx.typeWithVoid().type() != null) {
             tipoFuncao = verificarTipo(ctx.typeWithVoid().type());
         }
+               
         for (int i = 0; i < ctx.commands().size(); i++) {
-            visitCommand(ctx.commands(i).command());
+            visitCommands(ctx.commands(i));
         }
                 
         if(ctx.typeWithVoid().type() != null && !temRetorno && !ctx.ID().getText().equals("main")){
             throw new ParseCancellationException("Funcao "+ctx.ID().getText()+" não tem retorno necessário");
         }
-        temRetorno = false;
+        temRetorno = false; 
         retornaEscopoPai();
         return null;
     }
@@ -361,8 +413,6 @@ public class EmotesSemanticVisitor extends EmotesVisitor {
         return super.visitInitializeArray(ctx); //To change body of generated methods, choose Tools | Templates.
     }
 
-    
-
     @Override
     public Object visitInitializeMatrix(EmoteslangParser.InitializeMatrixContext ctx) {
         return super.visitInitializeMatrix(ctx); //To change body of generated methods, choose Tools | Templates.
@@ -398,6 +448,60 @@ public class EmotesSemanticVisitor extends EmotesVisitor {
         return super.visitParametersCall(ctx); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @Override
+    public Object visitFunctionCall(EmoteslangParser.FunctionCallContext ctx) {
+        Identificador id = Identificador.getUNSAFEId(ctx.ID().getText(), tabelaSimbolos);
+        
+        //Vê se a função existe
+        if (id == null) {
+            throw new ParseCancellationException("Chamada de função inexistente na " + ctx.start.getLine() + " coluna " + ctx.start.getCharPositionInLine() + ".");
+        }        
+        id.setUsada(true);
+        
+        //Captura os parametros da função e numeros
+        Escopo escopoFuncao = getEscopoDaFuncao(id.getNome());
+        int qtdParametrosNaFuncao;
+        List<Identificador> idListParametros = null;        
+        if (escopoFuncao != null) {
+            idListParametros = Identificador.getParametrosFuncao(escopoFuncao, tabelaSimbolos);
+            qtdParametrosNaFuncao = idListParametros.size();
+        }else{
+            qtdParametrosNaFuncao = 0;
+        }
+        
+        List<Tipo> tiposParam = new ArrayList<>();    
+        for(EmoteslangParser.ExpressionContext expressionContext : ctx.expressionList().expression()){
+//            tiposParam.add(visitExpressaoLoop(expressionContext));
+            visitExpression(expressionContext);
+        }
+        
+        int qtdParametrosChamada = ctx.expressionList().expression().size();
+        
+        //Valida se os numeros de parametros bate
+        if (qtdParametrosChamada != qtdParametrosNaFuncao) {
+            throw new ParseCancellationException("Chamada de função na linha " + ctx.start.getLine() + " coluna " + ctx.start.getCharPositionInLine() + " com numero incorreto de parametros. Esperado: " + qtdParametrosNaFuncao + " Encontrado: " + qtdParametrosChamada);
+        }
+        //verifica os tipos dos parametros das funcoes
+        if(idListParametros!=null && !tiposParam.isEmpty())
+        {
+            Iterator<Tipo> expIte = tiposParam.iterator();
+            Iterator<Identificador> paramIte = idListParametros.iterator();
+            while(expIte.hasNext() && paramIte.hasNext())
+            {
+                Identificador parametroFuncao = paramIte.next();
+                Tipo tipoParametroChamada = expIte.next();
+                if(parametroFuncao.getTipo() != tipoParametroChamada)
+                {
+//                    this.semanticErrors.add(new ParseCancellationException("Chamada de função na linha " + ctx.start.getLine() + " coluna " + ctx.start.getCharPositionInLine() + " está com parametros com tipos incorretos Esperado: "+parametroFuncao.getTipo().name()+" Recebido: "+tipoParametroChamada.name()));
+                }
+            }
+        }
+        visitChildren(ctx);
+        return null;
+
+        //Valida se os parametros que estão sendo passados existem se forem IDs
+    }
+    
     @Override
     public Object visitParametersList(EmoteslangParser.ParametersListContext ctx) {
         for (int i = 0; i < ctx.parameter().size(); i++) {
@@ -441,9 +545,18 @@ public class EmotesSemanticVisitor extends EmotesVisitor {
 
     @Override
     public Object visitWhiledes(EmoteslangParser.WhiledesContext ctx) {
-        return super.visitWhiledes(ctx); //To change body of generated methods, choose Tools | Templates.
+        escopoAtual = Escopo.criaEVaiEscopoNovo("while_" + contEscopo++, escopoAtual);
+        visitChildren(ctx);
+        retornaEscopoPai();
+        return null;
     }
-
+    
+    @Override
+    public Object visitFinalValue(EmoteslangParser.FinalValueContext ctx) {
+        visitChildren(ctx);
+        return null;
+    }
+    
     @Override
     public Object visitType(EmoteslangParser.TypeContext ctx) {
         if (ctx.TP_BIN() != null) {
@@ -546,5 +659,20 @@ public class EmotesSemanticVisitor extends EmotesVisitor {
             }
         }
         return null;
+    }
+    
+    public void verificarCompatibilidadeAtribuicao(Tipo tipoVariavelFinal, ParserRuleContext ctx){
+        if(this.pilhaTipoExpressao.isEmpty()){
+            return;
+        }
+        Tipo tipoAtribuição = this.pilhaTipoExpressao.pop();
+        int resultAtr = SemanticTable.atribType(tipoVariavelFinal, tipoAtribuição);
+        if(resultAtr == SemanticTable.ERR){
+            throw new ParseCancellationException("Tentando atribuir um " + tipoAtribuição.name() + " a um " + tipoVariavelFinal.name() + " na linha " + ctx.start.getLine());
+        }
+        if(resultAtr == SemanticTable.WAR){
+//            this.semanticWarnings.add("Atribuindo um " + tipoAtribuição.name() + " a um " + tipoVariavelFinal.name() + " na linha " + ctx.start.getLine());
+            System.out.println("Atribuindo um " + tipoAtribuição.name() + " a um " + tipoVariavelFinal.name() + " na linha " + ctx.start.getLine());
+        }
     }
 }

@@ -61,6 +61,8 @@ inputAndOutput: (READ | WRITE) LEFT_PARENTESIS parametersCall RIGHT_PARENTESIS;
 
 parametersCall: (expression (',' expression)*)?;
 
+functionCall: ID LEFT_PARENTESIS expressionList? RIGHT_PARENTESIS;
+
 commands: (conditionals | command) ;
 
 command
@@ -71,6 +73,7 @@ command
     |   breakdes
     |   attribution
     |   expression
+    |   functionCall
     |   inputAndOutput
     )   DOT_COMMA?
     ;
@@ -144,8 +147,7 @@ attribution
 
 expression
     : 
-        ID LEFT_PARENTESIS expressionList? RIGHT_PARENTESIS
-    |   ADD expression
+        ADD expression
     |   SUB expression
     |   NOT expression
     |   BIT_NOT expression
