@@ -120,6 +120,9 @@ public class MainWindow extends javax.swing.JFrame {
         tabMsgs = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         listaMensagens = new javax.swing.JList();
+        tabAvisos = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        listaAvisos = new javax.swing.JList();
         tabTable = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tabela = new javax.swing.JTable();
@@ -166,19 +169,27 @@ public class MainWindow extends javax.swing.JFrame {
 
         tabMsgs.add(jScrollPane2, java.awt.BorderLayout.CENTER);
 
-        jTabbedPane1.addTab("Mensagens", tabMsgs);
+        jTabbedPane1.addTab("Saída", tabMsgs);
+
+        tabAvisos.setLayout(new java.awt.BorderLayout());
+
+        jScrollPane3.setViewportView(listaAvisos);
+
+        tabAvisos.add(jScrollPane3, java.awt.BorderLayout.CENTER);
+
+        jTabbedPane1.addTab("Avisos", tabAvisos);
 
         tabTable.setLayout(new java.awt.BorderLayout());
 
         tabela.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {},
+                {},
+                {},
+                {}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+
             }
         ));
         jScrollPane1.setViewportView(tabela);
@@ -187,7 +198,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Tabela", tabTable);
 
-        painelMsgs.add(jTabbedPane1, java.awt.BorderLayout.CENTER);
+        painelMsgs.add(jTabbedPane1, java.awt.BorderLayout.PAGE_START);
 
         jSplitPane1.setRightComponent(painelMsgs);
 
@@ -229,6 +240,9 @@ public class MainWindow extends javax.swing.JFrame {
 
         DefaultListModel modeloLista = new DefaultListModel();
         listaMensagens.setModel(modeloLista);
+        
+        DefaultListModel modeloAvisos = new DefaultListModel();
+        listaAvisos.setModel(modeloAvisos);
 
 //        TratadorErrosLexico tratadorErrosLexico = new TratadorErrosLexico(modeloLista);
 //        TratadorErrosSintatico tratadorErrosSintatico = new TratadorErrosSintatico(modeloLista);
@@ -254,12 +268,17 @@ public class MainWindow extends javax.swing.JFrame {
                 visitor.visit(tree);
                 ids = visitor.getTabelaSimbolos();
                 
-                jTabbedPane1.setSelectedIndex(1);
+                jTabbedPane1.setSelectedIndex(2);
                 
                 tabela.setModel(getModel(ids));
                 tabela.setDefaultEditor(Object.class, null);
                 
                 for (Identificador id : ids) {
+                    
+                    if(!id.isUsada()){
+                        modeloAvisos.addElement((!id.isFuncao()? "Váriavel " : "Função ") + id.getNome() + " foi declarada mas não utilizada");
+                    }
+                    
                     System.out.println(id.getNome() + " " + id.getEscopo()+ " " + id.getTipo()+ " " + 
                             id.getQtdArmazenada()+ " " + id.getDimensoes()+ " " + id.getPosicaoParametro());
                 }
@@ -277,6 +296,17 @@ public class MainWindow extends javax.swing.JFrame {
                 frame.setVisible(true);
                 
                 
+                
+                if(!visitor.getWarnings().isEmpty()){
+                    jTabbedPane1.setSelectedIndex(1);
+                    for ( String warning : visitor.getWarnings()){
+                        modeloAvisos.addElement(warning);
+                    }
+                }
+                
+                if(!modeloAvisos.isEmpty()){
+                    modeloLista.addElement("Entretanto avisos foram gerados");
+                }
 
             } catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -285,6 +315,7 @@ public class MainWindow extends javax.swing.JFrame {
                 modeloLista.addElement(e.getMessage());
             }
         } else {
+            jTabbedPane1.setSelectedIndex(0);
             for (String erro : erroLexico.getErrors()) {
                 modeloLista.addElement(erro);
             }
@@ -396,11 +427,14 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JList listaAvisos;
     private javax.swing.JList listaMensagens;
     private javax.swing.JPanel painelEditor;
     private javax.swing.JPanel painelMsgs;
+    private javax.swing.JPanel tabAvisos;
     private javax.swing.JPanel tabMsgs;
     private javax.swing.JPanel tabTable;
     private javax.swing.JTable tabela;

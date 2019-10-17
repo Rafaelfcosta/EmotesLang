@@ -72,7 +72,6 @@ command
     |   returndes
     |   breakdes
     |   attribution
-    |   functionCall
     |   expression
     |   inputAndOutput
     )   DOT_COMMA?
@@ -143,12 +142,22 @@ matrix
     : ID arrayIndex arrayIndex;
 
 attribution
-    : (ID | array | matrix) ATTRIBUTION expression;
+    : (ID | array | matrix) (un_op | (ATTRIBUTION expression));
 
 expression
-    : 
-        ADD expression
-    |   SUB expression
+    :   (op_neg)?(finalValue)((operations)(finalValue))*;
+
+operations
+    : op_rel | op_neg | op_bitwise | op_aritmetic | op_logic;
+
+op_rel: BIGGERT | BIGGERE | SMALLERT | SMALLERE | EQUALS | DIFFERENT;
+op_neg: SUB | BIT_NOT | NOT;
+op_bitwise: BIT_LS | BIT_RS | BIT_AND | BIT_OR | BIT_NOT | BIT_XOR;
+op_aritmetic: ADD | SUB | MULT | DIV | MOD;
+op_logic: AND | OR | NOT;
+un_op: UN_ADD | UN_SUB;
+
+/*
     |   NOT expression
     |   BIT_NOT expression
     |   ID (arrayIndex arrayIndex?)? UN_ADD
@@ -175,6 +184,8 @@ expression
     |   expression BIT_OR expression
     |   finalValue
     ;
+ */
+
 
 finalValue: 
         ID
@@ -184,6 +195,7 @@ finalValue:
     |   BOOLEAN
     |   CHAR
     |   STRING
+    |   functionCall
     |   array
     |   matrix
     |   LEFT_PARENTESIS expression RIGHT_PARENTESIS

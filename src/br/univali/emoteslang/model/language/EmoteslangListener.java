@@ -428,6 +428,76 @@ public interface EmoteslangListener extends ParseTreeListener {
 	 */
 	void exitExpression(EmoteslangParser.ExpressionContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link EmoteslangParser#operations}.
+	 * @param ctx the parse tree
+	 */
+	void enterOperations(EmoteslangParser.OperationsContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link EmoteslangParser#operations}.
+	 * @param ctx the parse tree
+	 */
+	void exitOperations(EmoteslangParser.OperationsContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link EmoteslangParser#op_rel}.
+	 * @param ctx the parse tree
+	 */
+	void enterOp_rel(EmoteslangParser.Op_relContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link EmoteslangParser#op_rel}.
+	 * @param ctx the parse tree
+	 */
+	void exitOp_rel(EmoteslangParser.Op_relContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link EmoteslangParser#op_neg}.
+	 * @param ctx the parse tree
+	 */
+	void enterOp_neg(EmoteslangParser.Op_negContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link EmoteslangParser#op_neg}.
+	 * @param ctx the parse tree
+	 */
+	void exitOp_neg(EmoteslangParser.Op_negContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link EmoteslangParser#op_bitwise}.
+	 * @param ctx the parse tree
+	 */
+	void enterOp_bitwise(EmoteslangParser.Op_bitwiseContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link EmoteslangParser#op_bitwise}.
+	 * @param ctx the parse tree
+	 */
+	void exitOp_bitwise(EmoteslangParser.Op_bitwiseContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link EmoteslangParser#op_aritmetic}.
+	 * @param ctx the parse tree
+	 */
+	void enterOp_aritmetic(EmoteslangParser.Op_aritmeticContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link EmoteslangParser#op_aritmetic}.
+	 * @param ctx the parse tree
+	 */
+	void exitOp_aritmetic(EmoteslangParser.Op_aritmeticContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link EmoteslangParser#op_logic}.
+	 * @param ctx the parse tree
+	 */
+	void enterOp_logic(EmoteslangParser.Op_logicContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link EmoteslangParser#op_logic}.
+	 * @param ctx the parse tree
+	 */
+	void exitOp_logic(EmoteslangParser.Op_logicContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link EmoteslangParser#un_op}.
+	 * @param ctx the parse tree
+	 */
+	void enterUn_op(EmoteslangParser.Un_opContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link EmoteslangParser#un_op}.
+	 * @param ctx the parse tree
+	 */
+	void exitUn_op(EmoteslangParser.Un_opContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link EmoteslangParser#finalValue}.
 	 * @param ctx the parse tree
 	 */

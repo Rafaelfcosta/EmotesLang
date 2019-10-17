@@ -14,11 +14,11 @@ HeyGuys
 	
 		TriHard void main P( )G 
 		Kappa
-			GivePLZ P( x )G 
+			GivePLZ P( d )G 
 			Bonfire P("aaaaaaaaaaaaa")G 
 			
 				batata_frita P( 2 )G  Clap
-				sim_mas_nao P( vec )G  Clap
+				sim_mas_nao P( v[1] )G  Clap
 		KappaPride
 
 		TriHard void batata_frita P( int a )G 

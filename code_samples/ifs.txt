@@ -14,7 +14,7 @@ HeyGuys
 			Kappa
 				int c
 			KappaPride
-			pikaOH pikaHi P(  P( NotLikeThis CoolCat )G || CoolCat )G  
+			pikaOH pikaHi P(  NotLikeThis CoolCat || CoolCat )G  
 			Kappa
 				int d
 			KappaPride

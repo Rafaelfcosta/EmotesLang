@@ -263,6 +263,48 @@ public interface EmoteslangVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitExpression(EmoteslangParser.ExpressionContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link EmoteslangParser#operations}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitOperations(EmoteslangParser.OperationsContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link EmoteslangParser#op_rel}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitOp_rel(EmoteslangParser.Op_relContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link EmoteslangParser#op_neg}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitOp_neg(EmoteslangParser.Op_negContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link EmoteslangParser#op_bitwise}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitOp_bitwise(EmoteslangParser.Op_bitwiseContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link EmoteslangParser#op_aritmetic}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitOp_aritmetic(EmoteslangParser.Op_aritmeticContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link EmoteslangParser#op_logic}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitOp_logic(EmoteslangParser.Op_logicContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link EmoteslangParser#un_op}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitUn_op(EmoteslangParser.Un_opContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link EmoteslangParser#finalValue}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

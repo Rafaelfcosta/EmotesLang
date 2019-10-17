@@ -10,7 +10,6 @@ import br.univali.emoteslang.model.analise.Identificador;
 import br.univali.emoteslang.model.analise.Identificador.Tipo;
 import br.univali.emoteslang.model.language.EmoteslangParser;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -23,6 +22,7 @@ import org.antlr.v4.runtime.tree.TerminalNode;
  */
 public class EmotesSemanticVisitor extends EmotesVisitor {
 
+    List<String> warnings = new ArrayList<>();
     Stack<Identificador.Tipo> pilhaTipoExpressao = new Stack<>();
     Stack<Operation> pilhaOperacao = new Stack<>();
     boolean temRetorno = false;
@@ -60,47 +60,70 @@ public class EmotesSemanticVisitor extends EmotesVisitor {
         if (ctx == null) {
             return null;
         }
-//        this.pilhaTipoExpressao.clear();
-//        
-//        if(ctx.finalValue().LEFT_PARENTESIS() != null){
-////            this.pilhaTipoExpressao.push(?);
-//        }
-        System.out.println(ctx.getText());
-        Operation tipoOp = verificarTipoOperacao(ctx);
-        if(tipoOp != null){
-            this.pilhaOperacao.push(tipoOp);
-            System.out.println(tipoOp);
+        this.pilhaTipoExpressao.clear();
+        this.pilhaOperacao.clear();
+
+        for (EmoteslangParser.OperationsContext opCont : ctx.operations()) {
+            this.pilhaOperacao.push(verificarTipoOperacao(opCont));
         }
-        
-        
-        for (int i = 0; i < ctx.expression().size(); i++) {
-            System.out.println(ctx.expression(i).getText());
-            if (ctx.expression(i).finalValue().ID() != null) {
-                TerminalNode ID = ctx.expression(i).finalValue().ID();
-                String text = ID.getText();
-                Identificador id = Identificador.getId(text, tabelaSimbolos, escopoAtual);
-                if (ctx.expression(i).finalValue().array() != null) {
-                    visitArray(ctx.expression(i).finalValue().array());
+        for (int i = 0; i < ctx.finalValue().size(); i++) {
+            String valFinal = ctx.finalValue(i).getText();
+
+            if (ctx.finalValue(i).array() != null) {
+                valFinal = ctx.finalValue(i).ID().getText();
+            }
+            if (ctx.finalValue(i).functionCall() != null) {
+                visitFunctionCall(ctx.finalValue(i).functionCall());
+                valFinal = ctx.finalValue(i).functionCall().getText();
+            }
+            if (ctx.finalValue(i).LEFT_PARENTESIS() != null) {
+                //loop de exp
+            }
+
+            if (Identificador.getId(valFinal, tabelaSimbolos, escopoAtual) != null) {
+                Identificador id = Identificador.getId(valFinal, tabelaSimbolos, escopoAtual);
+                if (ctx.finalValue(i).array() != null) {
+                    visitArray(ctx.finalValue(i).array());
                 } else {
                     multidimensional = 0;
                 }
-                if (id == null) {
-                    throw new ParseCancellationException("Váriavel " + ctx.expression(i).finalValue().ID() + " não existe neste escopo Linha: " + ctx.start.getLine() + " Coluna: " + ctx.start.getCharPositionInLine());
-                } else if (!id.isInicializada()) {
-                    throw new ParseCancellationException("Váriavel " + ctx.expression(i).finalValue().ID() + " não inicializada Linha: " + ctx.start.getLine() + " Coluna: " + ctx.start.getCharPositionInLine());
-                } else if (id.getDimensoes() != multidimensional) {
-                    throw new ParseCancellationException("Dimensões incorreta do vetor " + ctx.expression(i).finalValue().ID() + " . Ele possui " + id.getDimensoes() + " dimensões e foi usada " + multidimensional + " Linha: " + ctx.start.getLine() + " Coluna: " + ctx.start.getCharPositionInLine());
-                } else {
-                    id.setUsada(true);
 
-//                    this.pilhaTipoExpressao.push(id.getTipo());
-                    return null;
+                if (!id.isInicializada()) {
+                    this.warnings.add("Váriavel " + ctx.finalValue(i).ID() + " não inicializada Linha: " + ctx.start.getLine() + " Coluna: " + ctx.start.getCharPositionInLine());
+//                    throw new ParseCancellationException("Váriavel " + ctx.finalValue(i).ID() + " não inicializada Linha: " + ctx.start.getLine() + " Coluna: " + ctx.start.getCharPositionInLine());
+                } else if (id.getDimensoes() != multidimensional) {
+                    throw new ParseCancellationException("Dimensões incorreta do vetor " + ctx.finalValue(i).ID() + " . Ele possui " + id.getDimensoes() + " dimensões e foi usada " + multidimensional + " Linha: " + ctx.start.getLine() + " Coluna: " + ctx.start.getCharPositionInLine());
                 }
+
+                id.setUsada(true);
+                this.pilhaTipoExpressao.push(id.getTipo());
+
+            } else if (verificarTipoConstante(ctx.finalValue(i)) == null) {
+                throw new ParseCancellationException("Váriavel " + ctx.finalValue(i).ID() + " não existe neste escopo Linha: " + ctx.start.getLine() + " Coluna: " + ctx.start.getCharPositionInLine());
+            } else {
+                this.pilhaTipoExpressao.push(verificarTipoConstante(ctx.finalValue(i)));
             }
         }
-//        verificarCompatibilidadeOperacao(ctx, this.pilhaTipoExpressao, this.pilhaOperacao);
-//        visitChildren(ctx);
+        verificarCompatibilidadeOperacao(ctx, this.pilhaTipoExpressao, this.pilhaOperacao);
+        return null;
+    }
 
+    public Tipo verificarTipoConstante(EmoteslangParser.FinalValueContext val) {
+        if (val.BIN() != null) {
+            return Tipo.BINARIO;
+        } else if (val.BOOLEAN() != null) {
+            return Tipo.LOGICO;
+        } else if (val.DOUBLE() != null || val.FLOAT() != null) {
+            return Tipo.REAL;
+        } else if (val.HEXA() != null) {
+            return Tipo.HEXADECIMAL;
+        } else if (val.INT() != null) {
+            return Tipo.INTEIRO;
+        } else if (val.STRING() != null) {
+            return Tipo.STRING;
+        } else if (val.CHAR() != null) {
+            return Tipo.CHAR;
+        }
         return null;
     }
 
@@ -151,30 +174,25 @@ public class EmotesSemanticVisitor extends EmotesVisitor {
         if (id == null) {
             throw new ParseCancellationException("Váriavel " + ctx.ID() + " não existe neste escopo Linha: " + ctx.start.getLine() + " Coluna: " + ctx.start.getCharPositionInLine());
         }
-        if ((ctx.expression().UN_ADD() != null || ctx.expression().UN_SUB() != null) && !id.isInicializada()) {
+        if (ctx.un_op() != null && !id.isInicializada()) {
             throw new ParseCancellationException("Váriavel " + ctx.ID() + " não inicializada Linha: " + ctx.start.getLine() + " Coluna: " + ctx.start.getCharPositionInLine());
         }
         if (id.getDimensoes() > 0 && ctx.array() == null) {
             throw new ParseCancellationException("Tentando atribuir ao vetor " + id.getNome() + " sem dizer a posiçao na linha " + ctx.start.getLine());
         }
 
-        if ((ctx.expression().UN_ADD() != null || ctx.expression().UN_SUB() != null)) {
-            System.out.println("aaaaaaaaaa");
+        if (ctx.un_op() != null) {
             Operation unario;
-            if (ctx.expression().UN_ADD() != null) {
+            if (ctx.un_op().UN_ADD() != null) {
                 unario = Operation.SOMA;
-                System.out.println("++");
-            } else if (ctx.expression().UN_SUB() != null) {
+            } else if (ctx.un_op().UN_SUB() != null) {
                 unario = Operation.SUBTRACAO;
-                System.out.println("--");
             }
         } else {
             visitExpression(ctx.expression());
-//            verificarCompatibilidadeAtribuicao(id.getTipo(), ctx);
+            verificarCompatibilidadeAtribuicao(id.getTipo(), ctx);
         }
-
         id.setUsada(true);
-
         id.setInicializada(true);
 
         return null;
@@ -323,8 +341,7 @@ public class EmotesSemanticVisitor extends EmotesVisitor {
         visitChildren(ctx);
         System.out.println(ident.getTipo());
         if (inicializada) {
-//            System.out.println("verif compatibilidade");
-//            verificarCompatibilidadeAtribuicao(ident.getTipo(), ctx);
+            verificarCompatibilidadeAtribuicao(ident.getTipo(), ctx);
         }
         return null;
     }
@@ -365,9 +382,9 @@ public class EmotesSemanticVisitor extends EmotesVisitor {
             visitCommands(ctx.commands(i));
         }
 
-//        if(ctx.typeWithVoid().type() != null && !temRetorno && !ctx.ID().getSymbol().getText().equals("main")){
-//            throw new ParseCancellationException("Funcao "+ctx.ID().getText()+" não tem retorno necessário");
-//        }
+        if (ctx.typeWithVoid().type() != null && !temRetorno && !ctx.ID().getSymbol().getText().equals("main")) {
+            throw new ParseCancellationException("Funcao " + ctx.ID().getText() + " não tem retorno necessário");
+        }
         temRetorno = false;
         retornaEscopoPai();
         return null;
@@ -667,62 +684,88 @@ public class EmotesSemanticVisitor extends EmotesVisitor {
         return null;
     }
 
-    public Operation verificarTipoOperacao(EmoteslangParser.ExpressionContext expContext) {
-        if (expContext.ADD() != null) {
-            return Operation.SOMA;
-        }
-        if (expContext.SUB() != null) {
-            return Operation.SUBTRACAO;
-        }
-        if (expContext.DIV() != null) {
-            return Operation.DIVISAO;
-        }
-        if (expContext.MULT() != null) {
-            return Operation.MULTIPLICACAO;
-        }
-        if (expContext.MOD()!= null) {
-            return Operation.MOD;
+    public Operation verificarTipoOperacao(EmoteslangParser.OperationsContext opContext) {
+
+        if (opContext.op_aritmetic() != null) {
+            if (opContext.op_aritmetic().ADD() != null) {
+                return Operation.SOMA;
+            }
+            if (opContext.op_aritmetic().SUB() != null) {
+                return Operation.SUBTRACAO;
+            }
+            if (opContext.op_aritmetic().DIV() != null) {
+                return Operation.DIVISAO;
+            }
+            if (opContext.op_aritmetic().MULT() != null) {
+                return Operation.MULTIPLICACAO;
+            }
+            if (opContext.op_aritmetic().MOD() != null) {
+                return Operation.MOD;
+            }
         }
 
-        if (expContext.BIT_RS() != null) {
-            return Operation.BITSHIFTRIGHT;
-        }
-        if (expContext.BIT_LS() != null) {
-            return Operation.BITSHIFTLEFT;
-        }
-        if (expContext.BIT_NOT() != null) {
-            return Operation.BITNOT;
-        }
-
-        if (expContext.AND() != null) {
-            return Operation.AND;
-        }
-        if (expContext.NOT() != null) {
-            return Operation.NOT;
-        }
-        if (expContext.OR() != null) {
-            return Operation.OR;
+        if (opContext.op_bitwise() != null) {
+            if (opContext.op_bitwise().BIT_RS() != null) {
+                return Operation.BITSHIFTRIGHT;
+            }
+            if (opContext.op_bitwise().BIT_LS() != null) {
+                return Operation.BITSHIFTLEFT;
+            }
+            if (opContext.op_bitwise().BIT_NOT() != null) {
+                return Operation.BITNOT;
+            }
+            if (opContext.op_bitwise().BIT_AND() != null) {
+                return Operation.AND;
+            }
+            if (opContext.op_bitwise().BIT_OR() != null) {
+                return Operation.OR;
+            }
         }
 
-        if (expContext.DIFFERENT() != null) {
-            return Operation.DIFERENTE;
-        }
-        if (expContext.EQUALS() != null) {
-            return Operation.IDENTICO;
-        }
-        if (expContext.BIGGERE() != null) {
-            return Operation.MAIOROUIGUAL;
-        }
-        if (expContext.BIGGERT() != null) {
-            return Operation.MAIORQUE;
-        }
-        if (expContext.SMALLERE() != null) {
-            return Operation.MENOROUIGUAL;
-        }
-        if (expContext.SMALLERT() != null) {
-            return Operation.MENORQUE;
+        if (opContext.op_logic() != null) {
+            if (opContext.op_logic().AND() != null) {
+                return Operation.AND;
+            }
+            if (opContext.op_logic().NOT() != null) {
+                return Operation.NOT;
+            }
+            if (opContext.op_logic().OR() != null) {
+                return Operation.OR;
+            }
         }
 
+        if (opContext.op_neg() != null) {
+            if (opContext.op_neg().BIT_NOT() != null) {
+                return Operation.BITNOT;
+            }
+            if (opContext.op_neg().NOT() != null) {
+                return Operation.NOT;
+            }
+            if (opContext.op_neg().SUB() != null) {
+                return Operation.SUBTRACAO;
+            }
+        }
+
+        if (opContext.op_rel() != null) {
+            if (opContext.op_rel().DIFFERENT() != null) {
+                return Operation.DIFERENTE;
+            }
+            if (opContext.op_rel().EQUALS() != null) {
+                return Operation.IDENTICO;
+            }
+            if (opContext.op_rel().BIGGERE() != null) {
+                return Operation.MAIOROUIGUAL;
+            }
+            if (opContext.op_rel().BIGGERT() != null) {
+                return Operation.MAIORQUE;
+            }
+            if (opContext.op_rel().SMALLERE() != null) {
+                return Operation.MENOROUIGUAL;
+            }
+            if (opContext.op_rel().SMALLERT() != null) {
+                return Operation.MENORQUE;
+            }
+        }
         return null;
     }
 
@@ -736,8 +779,12 @@ public class EmotesSemanticVisitor extends EmotesVisitor {
             throw new ParseCancellationException("Tentando atribuir um " + tipoAtribuição.name() + " a um " + tipoVariavelFinal.name() + " na linha " + ctx.start.getLine());
         }
         if (resultAtr == SemanticTable.WAR) {
-//            this.semanticWarnings.add("Atribuindo um " + tipoAtribuição.name() + " a um " + tipoVariavelFinal.name() + " na linha " + ctx.start.getLine());
-            System.out.println("Atribuindo um " + tipoAtribuição.name() + " a um " + tipoVariavelFinal.name() + " na linha " + ctx.start.getLine());
+            this.warnings.add("Atribuindo um " + tipoAtribuição.name() + " a um " + tipoVariavelFinal.name() + " na linha " + ctx.start.getLine());
         }
     }
+
+    public List<String> getWarnings() {
+        return warnings;
+    }
+    
 }
