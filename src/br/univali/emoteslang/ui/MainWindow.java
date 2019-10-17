@@ -274,13 +274,9 @@ public class MainWindow extends javax.swing.JFrame {
                 tabela.setDefaultEditor(Object.class, null);
                 
                 for (Identificador id : ids) {
-                    
                     if(!id.isUsada()){
                         modeloAvisos.addElement((!id.isFuncao()? "Váriavel " : "Função ") + id.getNome() + " foi declarada mas não utilizada");
                     }
-                    
-                    System.out.println(id.getNome() + " " + id.getEscopo()+ " " + id.getTipo()+ " " + 
-                            id.getQtdArmazenada()+ " " + id.getDimensoes()+ " " + id.getPosicaoParametro());
                 }
                 
                 
@@ -313,6 +309,7 @@ public class MainWindow extends javax.swing.JFrame {
                 
                 erroLexico.getErrors().add(e.getMessage());
                 modeloLista.addElement(e.getMessage());
+                jTabbedPane1.setSelectedIndex(0);
             }
         } else {
             jTabbedPane1.setSelectedIndex(0);
