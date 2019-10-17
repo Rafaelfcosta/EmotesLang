@@ -143,14 +143,14 @@ public class EmoteslangBaseVisitor<T> extends AbstractParseTreeVisitor<T> implem
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitParametersCall(EmoteslangParser.ParametersCallContext ctx) { return visitChildren(ctx); }
+	@Override public T visitFunctionCall(EmoteslangParser.FunctionCallContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitFunctionCall(EmoteslangParser.FunctionCallContext ctx) { return visitChildren(ctx); }
+	@Override public T visitParametersCall(EmoteslangParser.ParametersCallContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

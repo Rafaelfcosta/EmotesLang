@@ -59,9 +59,9 @@ paramMatrix
 
 inputAndOutput: (READ | WRITE) LEFT_PARENTESIS parametersCall RIGHT_PARENTESIS;
 
-parametersCall: (expression (',' expression)*)?;
+functionCall: ID LEFT_PARENTESIS parametersCall RIGHT_PARENTESIS;
 
-functionCall: ID LEFT_PARENTESIS expressionList? RIGHT_PARENTESIS;
+parametersCall: (expression (',' expression)*)?;
 
 commands: (conditionals | command) ;
 
@@ -72,8 +72,8 @@ command
     |   returndes
     |   breakdes
     |   attribution
-    |   expression
     |   functionCall
+    |   expression
     |   inputAndOutput
     )   DOT_COMMA?
     ;
