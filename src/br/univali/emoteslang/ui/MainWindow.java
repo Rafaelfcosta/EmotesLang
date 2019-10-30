@@ -10,6 +10,7 @@ import br.univali.emoteslang.model.analise.ErroLexico;
 import br.univali.emoteslang.model.analise.Identificador;
 import br.univali.emoteslang.model.language.EmoteslangLexer;
 import br.univali.emoteslang.model.language.EmoteslangParser;
+import br.univali.emoteslang.model.visitor.BipGenerator;
 import br.univali.emoteslang.model.visitor.EmotesSemanticVisitor;
 import java.awt.Dimension;
 import java.io.File;
@@ -57,7 +58,7 @@ public class MainWindow extends javax.swing.JFrame {
 //        painelMsgs.setBackground(new Color(100,65,164));
 //        listaMensagens.setBackground(new Color(100,65,164));
         this.setSize(1024, 768);
-        
+
         emotesTextArea = new RSyntaxTextArea(20, 60);
 
         AbstractTokenMakerFactory atmf = (AbstractTokenMakerFactory) TokenMakerFactory.getDefaultInstance();
@@ -80,7 +81,7 @@ public class MainWindow extends javax.swing.JFrame {
                 + "RIP");
 
         emotesScrollPane = new RTextScrollPane(emotesTextArea);
-        painelEditor.add(emotesScrollPane);
+        tabEmotesCode.add(emotesScrollPane);
 
         setLocationRelativeTo(null);
 
@@ -112,8 +113,10 @@ public class MainWindow extends javax.swing.JFrame {
         jMenuItem1 = new javax.swing.JMenuItem();
         jSplitPane1 = new javax.swing.JSplitPane();
         painelEditor = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jPanel1 = new javax.swing.JPanel();
+        codeTabbedPane = new javax.swing.JTabbedPane();
+        tabEmotesCode = new javax.swing.JPanel();
+        tabBipCode = new javax.swing.JPanel();
+        painelBotoes = new javax.swing.JPanel();
         btnCompilar = new javax.swing.JButton();
         painelMsgs = new javax.swing.JPanel();
         jTabbedPane1 = new javax.swing.JTabbedPane();
@@ -144,10 +147,15 @@ public class MainWindow extends javax.swing.JFrame {
         painelEditor.setToolTipText("");
         painelEditor.setLayout(new java.awt.BorderLayout());
 
-        jLabel1.setText("Código:");
-        painelEditor.add(jLabel1, java.awt.BorderLayout.PAGE_START);
+        tabEmotesCode.setLayout(new java.awt.BorderLayout());
+        codeTabbedPane.addTab("Emotes Code", tabEmotesCode);
 
-        jPanel1.setLayout(new java.awt.BorderLayout());
+        tabBipCode.setLayout(new java.awt.BorderLayout());
+        codeTabbedPane.addTab("Bip Code", tabBipCode);
+
+        painelEditor.add(codeTabbedPane, java.awt.BorderLayout.CENTER);
+
+        painelBotoes.setLayout(new java.awt.BorderLayout());
 
         btnCompilar.setText("Compilar");
         btnCompilar.addActionListener(new java.awt.event.ActionListener() {
@@ -155,13 +163,16 @@ public class MainWindow extends javax.swing.JFrame {
                 btnCompilarActionPerformed(evt);
             }
         });
-        jPanel1.add(btnCompilar, java.awt.BorderLayout.EAST);
+        painelBotoes.add(btnCompilar, java.awt.BorderLayout.EAST);
 
-        painelEditor.add(jPanel1, java.awt.BorderLayout.SOUTH);
+        painelEditor.add(painelBotoes, java.awt.BorderLayout.SOUTH);
 
         jSplitPane1.setTopComponent(painelEditor);
 
+        painelMsgs.setPreferredSize(new java.awt.Dimension(457, 200));
         painelMsgs.setLayout(new java.awt.BorderLayout());
+
+        jTabbedPane1.setPreferredSize(new java.awt.Dimension(457, 160));
 
         tabMsgs.setLayout(new java.awt.BorderLayout());
 
@@ -198,7 +209,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Tabela", tabTable);
 
-        painelMsgs.add(jTabbedPane1, java.awt.BorderLayout.PAGE_START);
+        painelMsgs.add(jTabbedPane1, java.awt.BorderLayout.CENTER);
 
         jSplitPane1.setRightComponent(painelMsgs);
 
@@ -240,7 +251,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         DefaultListModel modeloLista = new DefaultListModel();
         listaMensagens.setModel(modeloLista);
-        
+
         DefaultListModel modeloAvisos = new DefaultListModel();
         listaAvisos.setModel(modeloAvisos);
 
@@ -261,25 +272,24 @@ public class MainWindow extends javax.swing.JFrame {
         // Chama a regra inicial do parser, esta regra deve estar definida na gramática
         ParseTree tree = parser.program();
 
-        if (erroLexico.getErrors().isEmpty()) {          
+        if (erroLexico.getErrors().isEmpty()) {
             modeloLista.addElement("Compilado com sucesso!");
             EmotesSemanticVisitor visitor = new EmotesSemanticVisitor(new ArrayList<Identificador>());
             try {
                 visitor.visit(tree);
                 ids = visitor.getTabelaSimbolos();
-                
+
                 jTabbedPane1.setSelectedIndex(2);
-                
+
                 tabela.setModel(getModel(ids));
                 tabela.setDefaultEditor(Object.class, null);
-                
+
                 for (Identificador id : ids) {
-                    if(!id.isUsada()){
-                        modeloAvisos.addElement((!id.isFuncao()? "Váriavel " : "Função ") + id.getNome() + " foi declarada mas não utilizada");
+                    if (!id.isUsada()) {
+                        modeloAvisos.addElement((!id.isFuncao() ? "Váriavel " : "Função ") + id.getNome() + " foi declarada mas não utilizada");
                     }
                 }
-                
-                
+
                 Tree parseTreeRoot = tree;
                 TreeNodeWrapper nodeRoot = new TreeNodeWrapper(parseTreeRoot);
                 fillTree(nodeRoot, parseTreeRoot);
@@ -290,23 +300,26 @@ public class MainWindow extends javax.swing.JFrame {
                 frame.pack();
                 frame.setLocationRelativeTo(null);
                 frame.setVisible(true);
-                
-                
-                
-                if(!visitor.getWarnings().isEmpty()){
+
+                if (!visitor.getWarnings().isEmpty()) {
                     jTabbedPane1.setSelectedIndex(1);
-                    for ( String warning : visitor.getWarnings()){
+                    for (String warning : visitor.getWarnings()) {
                         modeloAvisos.addElement(warning);
                     }
                 }
-                
-                if(!modeloAvisos.isEmpty()){
+
+                if (!modeloAvisos.isEmpty()) {
                     modeloLista.addElement("Entretanto avisos foram gerados");
                 }
 
+                BipGenerator bipGenerator = new BipGenerator(ids);
+                bipGenerator.visit(tree);
+                String codigo = bipGenerator.getCodigo();
+                System.out.println(codigo);
+
             } catch (Exception e) {
                 System.out.println(e.getMessage());
-                
+
                 erroLexico.getErrors().add(e.getMessage());
                 modeloLista.addElement(e.getMessage());
                 jTabbedPane1.setSelectedIndex(0);
@@ -318,9 +331,8 @@ public class MainWindow extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_btnCompilarActionPerformed
-    
-    private TableModel getModel(List<Identificador> ids)
-    {
+
+    private TableModel getModel(List<Identificador> ids) {
         DefaultTableModel tm = new DefaultTableModel();
         tm.addColumn("nome");
         tm.addColumn("tipo");
@@ -332,16 +344,15 @@ public class MainWindow extends javax.swing.JFrame {
         tm.addColumn("posicaoParametro");
         tm.addColumn("dimensões");
         tm.addColumn("função");
-        for (Identificador id : ids)
-        {
+        for (Identificador id : ids) {
             Vector vector = new Vector();
             vector.add(id.getNome());
             vector.add(id.getTipo());
             vector.add(id.isInicializada());
-            if(!id.isInicializada()){
+            if (!id.isInicializada()) {
 //                this.warnings.add("Variável " + id.getNome() + " no escopo " + id.getEscopo() + " não foi inicializada");
-            }else{
-                if(!id.isUsada()){
+            } else {
+                if (!id.isUsada()) {
                     String funcaoVar = (id.isFuncao()) ? "Função " : "Variável ";
 //                    this.warnings.add(funcaoVar + id.getNome() + " no escopo " + id.getEscopo() + " não foi utilizada");
                 }
@@ -357,7 +368,7 @@ public class MainWindow extends javax.swing.JFrame {
         }
         return tm;
     }
-    
+
     private static class TreeNodeWrapper extends DefaultMutableTreeNode {
 
         TreeNodeWrapper(Tree tree) {
@@ -404,11 +415,16 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
         JFileChooser filechooser = new JFileChooser("./code_samples");
-        filechooser.showSaveDialog(this);
 
-        try (FileWriter fw = new FileWriter(filechooser.getSelectedFile() + ".txt")) {
-            fw.write(emotesTextArea.getText());
-        } catch (Exception e) {
+        int returnVal = filechooser.showSaveDialog(null);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            try {
+                FileWriter fw = new FileWriter(filechooser.getSelectedFile() + ".emote");
+                fw.write(emotesTextArea.getText());
+                fw.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }//GEN-LAST:event_btnSaveActionPerformed
 
@@ -416,12 +432,11 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JButton btnCompilar;
     private javax.swing.JMenuItem btnOpen;
     private javax.swing.JMenuItem btnSave;
+    private javax.swing.JTabbedPane codeTabbedPane;
     private javax.swing.JButton jButton1;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
@@ -429,9 +444,12 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JList listaAvisos;
     private javax.swing.JList listaMensagens;
+    private javax.swing.JPanel painelBotoes;
     private javax.swing.JPanel painelEditor;
     private javax.swing.JPanel painelMsgs;
     private javax.swing.JPanel tabAvisos;
+    private javax.swing.JPanel tabBipCode;
+    private javax.swing.JPanel tabEmotesCode;
     private javax.swing.JPanel tabMsgs;
     private javax.swing.JPanel tabTable;
     private javax.swing.JTable tabela;

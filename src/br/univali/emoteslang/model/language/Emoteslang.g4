@@ -69,6 +69,7 @@ command
     :
     ( 
         statements
+    |   functionCall    
     |   returndes
     |   breakdes
     |   attribution
@@ -188,6 +189,7 @@ un_op: UN_ADD | UN_SUB;
 
 
 finalValue: 
+
         ID
     |   (INT | HEXA | BIN)
     |   DOUBLE
@@ -195,9 +197,9 @@ finalValue:
     |   BOOLEAN
     |   CHAR
     |   STRING
-    |   functionCall
     |   array
     |   matrix
+    |   functionCall
     |   LEFT_PARENTESIS expression RIGHT_PARENTESIS
     ;
 
