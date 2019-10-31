@@ -190,7 +190,8 @@ un_op: UN_ADD | UN_SUB;
 
 finalValue: 
 
-        ID
+        functionCall
+    |   ID
     |   (INT | HEXA | BIN)
     |   DOUBLE
     |   FLOAT
@@ -199,7 +200,6 @@ finalValue:
     |   STRING
     |   array
     |   matrix
-    |   functionCall
     |   LEFT_PARENTESIS expression RIGHT_PARENTESIS
     ;
 

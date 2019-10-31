@@ -27,6 +27,7 @@ import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
@@ -50,24 +51,33 @@ public class MainWindow extends javax.swing.JFrame {
 
     RSyntaxTextArea emotesTextArea;
     RTextScrollPane emotesScrollPane;
+
+    RSyntaxTextArea bipTextArea;
+    RTextScrollPane bipScrollPane;
+
     List<Identificador> ids = null;
+
+    String codigo = "";
 
     public MainWindow() {
         initComponents();
-//        painelEditor.setBackground(new Color(100,65,164));
-//        painelMsgs.setBackground(new Color(100,65,164));
-//        listaMensagens.setBackground(new Color(100,65,164));
         this.setSize(1024, 768);
 
         emotesTextArea = new RSyntaxTextArea(20, 60);
+        bipTextArea = new RSyntaxTextArea(20, 60);
 
         AbstractTokenMakerFactory atmf = (AbstractTokenMakerFactory) TokenMakerFactory.getDefaultInstance();
         atmf.putMapping("text/emotesLanguage", "br.univali.emoteslang.ui.rsa.EmotesTokenMaker");
+        atmf.putMapping("text/bipLanguage", "br.univali.emoteslang.ui.rsa.BipTokenMaker");
 
         emotesTextArea.setSyntaxEditingStyle("text/emotesLanguage");
 
+        bipTextArea.setEditable(false);
+        bipTextArea.setSyntaxEditingStyle("text/bipLanguage");
+
         Theme theme = carregarTema();
         theme.apply(emotesTextArea);
+        theme.apply(bipTextArea);
 
         emotesTextArea.setText("HeyGuys\n"
                 + "    Kappa\n"
@@ -81,7 +91,10 @@ public class MainWindow extends javax.swing.JFrame {
                 + "RIP");
 
         emotesScrollPane = new RTextScrollPane(emotesTextArea);
+        bipScrollPane = new RTextScrollPane(bipTextArea);
+
         tabEmotesCode.add(emotesScrollPane);
+        tabBipCode.add(bipScrollPane);
 
         setLocationRelativeTo(null);
 
@@ -314,8 +327,9 @@ public class MainWindow extends javax.swing.JFrame {
 
                 BipGenerator bipGenerator = new BipGenerator(ids);
                 bipGenerator.visit(tree);
-                String codigo = bipGenerator.getCodigo();
+                codigo = bipGenerator.getCodigo();
                 System.out.println(codigo);
+                bipTextArea.setText(codigo);
 
             } catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -414,17 +428,34 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_btnOpenActionPerformed
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
-        JFileChooser filechooser = new JFileChooser("./code_samples");
+        try {
+            if (codeTabbedPane.getSelectedIndex() == 0) {
 
-        int returnVal = filechooser.showSaveDialog(null);
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
-            try {
-                FileWriter fw = new FileWriter(filechooser.getSelectedFile() + ".emote");
-                fw.write(emotesTextArea.getText());
-                fw.close();
-            } catch (Exception e) {
-                e.printStackTrace();
+                JFileChooser filechooser = new JFileChooser("./code_samples");
+                int returnVal = filechooser.showSaveDialog(null);
+
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    FileWriter fw = new FileWriter(filechooser.getSelectedFile() + ".emote");
+                    fw.write(emotesTextArea.getText());
+                    fw.close();
+                }
+            } else {
+
+                if (codigo.equals("")) {
+                    JOptionPane.showMessageDialog(this, "Compilação ncessária antes de salvar o código");
+                    return;
+                }
+                JFileChooser filechooser = new JFileChooser("./code_samples");
+                int returnVal = filechooser.showSaveDialog(null);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+
+                    FileWriter fw = new FileWriter(filechooser.getSelectedFile() + ".asm");
+                    fw.write(bipTextArea.getText());
+                    fw.close();
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }//GEN-LAST:event_btnSaveActionPerformed
 

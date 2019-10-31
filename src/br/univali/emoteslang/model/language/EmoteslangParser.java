@@ -3562,6 +3562,9 @@ public class EmoteslangParser extends Parser {
 	}
 
 	public static class FinalValueContext extends ParserRuleContext {
+		public FunctionCallContext functionCall() {
+			return getRuleContext(FunctionCallContext.class,0);
+		}
 		public TerminalNode ID() { return getToken(EmoteslangParser.ID, 0); }
 		public TerminalNode INT() { return getToken(EmoteslangParser.INT, 0); }
 		public TerminalNode HEXA() { return getToken(EmoteslangParser.HEXA, 0); }
@@ -3576,9 +3579,6 @@ public class EmoteslangParser extends Parser {
 		}
 		public MatrixContext matrix() {
 			return getRuleContext(MatrixContext.class,0);
-		}
-		public FunctionCallContext functionCall() {
-			return getRuleContext(FunctionCallContext.class,0);
 		}
 		public TerminalNode LEFT_PARENTESIS() { return getToken(EmoteslangParser.LEFT_PARENTESIS, 0); }
 		public ExpressionContext expression() {
@@ -3616,13 +3616,20 @@ public class EmoteslangParser extends Parser {
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(440);
-				match(ID);
+				functionCall();
 				}
 				break;
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(441);
+				match(ID);
+				}
+				break;
+			case 3:
+				enterOuterAlt(_localctx, 3);
+				{
+				setState(442);
 				_la = _input.LA(1);
 				if ( !(((((_la - 66)) & ~0x3f) == 0 && ((1L << (_la - 66)) & ((1L << (INT - 66)) | (1L << (BIN - 66)) | (1L << (HEXA - 66)))) != 0)) ) {
 				_errHandler.recoverInline(this);
@@ -3634,60 +3641,53 @@ public class EmoteslangParser extends Parser {
 				}
 				}
 				break;
-			case 3:
-				enterOuterAlt(_localctx, 3);
-				{
-				setState(442);
-				match(DOUBLE);
-				}
-				break;
 			case 4:
 				enterOuterAlt(_localctx, 4);
 				{
 				setState(443);
-				match(FLOAT);
+				match(DOUBLE);
 				}
 				break;
 			case 5:
 				enterOuterAlt(_localctx, 5);
 				{
 				setState(444);
-				match(BOOLEAN);
+				match(FLOAT);
 				}
 				break;
 			case 6:
 				enterOuterAlt(_localctx, 6);
 				{
 				setState(445);
-				match(CHAR);
+				match(BOOLEAN);
 				}
 				break;
 			case 7:
 				enterOuterAlt(_localctx, 7);
 				{
 				setState(446);
-				match(STRING);
+				match(CHAR);
 				}
 				break;
 			case 8:
 				enterOuterAlt(_localctx, 8);
 				{
 				setState(447);
-				array();
+				match(STRING);
 				}
 				break;
 			case 9:
 				enterOuterAlt(_localctx, 9);
 				{
 				setState(448);
-				matrix();
+				array();
 				}
 				break;
 			case 10:
 				enterOuterAlt(_localctx, 10);
 				{
 				setState(449);
-				functionCall();
+				matrix();
 				}
 				break;
 			case 11:
@@ -4064,22 +4064,22 @@ public class EmoteslangParser extends Parser {
 		"\2\2\u01adW\3\2\2\2\u01ae\u01af\t\4\2\2\u01afY\3\2\2\2\u01b0\u01b1\t\5"+
 		"\2\2\u01b1[\3\2\2\2\u01b2\u01b3\t\6\2\2\u01b3]\3\2\2\2\u01b4\u01b5\t\7"+
 		"\2\2\u01b5_\3\2\2\2\u01b6\u01b7\t\b\2\2\u01b7a\3\2\2\2\u01b8\u01b9\t\t"+
-		"\2\2\u01b9c\3\2\2\2\u01ba\u01c9\7C\2\2\u01bb\u01c9\t\n\2\2\u01bc\u01c9"+
-		"\7E\2\2\u01bd\u01c9\7F\2\2\u01be\u01c9\7\34\2\2\u01bf\u01c9\7G\2\2\u01c0"+
-		"\u01c9\7H\2\2\u01c1\u01c9\5N(\2\u01c2\u01c9\5P)\2\u01c3\u01c9\5&\24\2"+
-		"\u01c4\u01c5\7<\2\2\u01c5\u01c6\5T+\2\u01c6\u01c7\7=\2\2\u01c7\u01c9\3"+
-		"\2\2\2\u01c8\u01ba\3\2\2\2\u01c8\u01bb\3\2\2\2\u01c8\u01bc\3\2\2\2\u01c8"+
-		"\u01bd\3\2\2\2\u01c8\u01be\3\2\2\2\u01c8\u01bf\3\2\2\2\u01c8\u01c0\3\2"+
-		"\2\2\u01c8\u01c1\3\2\2\2\u01c8\u01c2\3\2\2\2\u01c8\u01c3\3\2\2\2\u01c8"+
-		"\u01c4\3\2\2\2\u01c9e\3\2\2\2\u01ca\u01cd\7\33\2\2\u01cb\u01cd\5h\65\2"+
-		"\u01cc\u01ca\3\2\2\2\u01cc\u01cb\3\2\2\2\u01cdg\3\2\2\2\u01ce\u01cf\t"+
-		"\13\2\2\u01cfi\3\2\2\2\u01d0\u01d5\5T+\2\u01d1\u01d2\7\67\2\2\u01d2\u01d4"+
-		"\5T+\2\u01d3\u01d1\3\2\2\2\u01d4\u01d7\3\2\2\2\u01d5\u01d3\3\2\2\2\u01d5"+
-		"\u01d6\3\2\2\2\u01d6k\3\2\2\2\u01d7\u01d5\3\2\2\2.qw\u0082\u0086\u008b"+
-		"\u0090\u009b\u00a3\u00ae\u00b2\u00c5\u00cc\u00d6\u00db\u00e0\u00fc\u00ff"+
-		"\u0103\u010c\u010f\u0115\u0119\u0122\u013a\u014b\u014f\u0159\u0160\u0164"+
-		"\u0167\u016d\u0173\u0179\u017e\u0182\u0186\u0194\u0199\u019c\u01a4\u01ac"+
-		"\u01c8\u01cc\u01d5";
+		"\2\2\u01b9c\3\2\2\2\u01ba\u01c9\5&\24\2\u01bb\u01c9\7C\2\2\u01bc\u01c9"+
+		"\t\n\2\2\u01bd\u01c9\7E\2\2\u01be\u01c9\7F\2\2\u01bf\u01c9\7\34\2\2\u01c0"+
+		"\u01c9\7G\2\2\u01c1\u01c9\7H\2\2\u01c2\u01c9\5N(\2\u01c3\u01c9\5P)\2\u01c4"+
+		"\u01c5\7<\2\2\u01c5\u01c6\5T+\2\u01c6\u01c7\7=\2\2\u01c7\u01c9\3\2\2\2"+
+		"\u01c8\u01ba\3\2\2\2\u01c8\u01bb\3\2\2\2\u01c8\u01bc\3\2\2\2\u01c8\u01bd"+
+		"\3\2\2\2\u01c8\u01be\3\2\2\2\u01c8\u01bf\3\2\2\2\u01c8\u01c0\3\2\2\2\u01c8"+
+		"\u01c1\3\2\2\2\u01c8\u01c2\3\2\2\2\u01c8\u01c3\3\2\2\2\u01c8\u01c4\3\2"+
+		"\2\2\u01c9e\3\2\2\2\u01ca\u01cd\7\33\2\2\u01cb\u01cd\5h\65\2\u01cc\u01ca"+
+		"\3\2\2\2\u01cc\u01cb\3\2\2\2\u01cdg\3\2\2\2\u01ce\u01cf\t\13\2\2\u01cf"+
+		"i\3\2\2\2\u01d0\u01d5\5T+\2\u01d1\u01d2\7\67\2\2\u01d2\u01d4\5T+\2\u01d3"+
+		"\u01d1\3\2\2\2\u01d4\u01d7\3\2\2\2\u01d5\u01d3\3\2\2\2\u01d5\u01d6\3\2"+
+		"\2\2\u01d6k\3\2\2\2\u01d7\u01d5\3\2\2\2.qw\u0082\u0086\u008b\u0090\u009b"+
+		"\u00a3\u00ae\u00b2\u00c5\u00cc\u00d6\u00db\u00e0\u00fc\u00ff\u0103\u010c"+
+		"\u010f\u0115\u0119\u0122\u013a\u014b\u014f\u0159\u0160\u0164\u0167\u016d"+
+		"\u0173\u0179\u017e\u0182\u0186\u0194\u0199\u019c\u01a4\u01ac\u01c8\u01cc"+
+		"\u01d5";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

@@ -103,7 +103,7 @@ public class EmotesSemanticVisitor extends EmotesVisitor {
                 id.setUsada(true);
                 this.pilhaTipoExpressao.push(id.getTipo());
 
-            } else if (verificarTipoConstante(ctx.finalValue(i)) == null) {
+            } else if (verificarTipoConstante(ctx.finalValue(i)) == null && Identificador.getUNSAFEId(valFinal, tabelaSimbolos) == null) {
                 throw new ParseCancellationException("Váriavel " + ctx.finalValue(i).ID() + " não existe neste escopo Linha: " + ctx.start.getLine() + " Coluna: " + ctx.start.getCharPositionInLine());
             } else {
                 this.pilhaTipoExpressao.push(verificarTipoConstante(ctx.finalValue(i)));
