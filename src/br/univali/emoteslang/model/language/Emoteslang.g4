@@ -191,6 +191,7 @@ un_op: UN_ADD | UN_SUB;
 finalValue: 
 
         functionCall
+    |   array
     |   ID
     |   (INT | HEXA | BIN)
     |   DOUBLE
@@ -198,7 +199,6 @@ finalValue:
     |   BOOLEAN
     |   CHAR
     |   STRING
-    |   array
     |   matrix
     |   LEFT_PARENTESIS expression RIGHT_PARENTESIS
     ;

@@ -55,7 +55,7 @@ public class AssemblyName {
     }
     
     public static AssemblyName findAN(List<AssemblyName> anlist, Identificador id){
-        System.out.println(anlist);
+//        System.out.println(anlist);
         for (AssemblyName anlist1 : anlist)
         {
             if(anlist1.getId().equals(id)){

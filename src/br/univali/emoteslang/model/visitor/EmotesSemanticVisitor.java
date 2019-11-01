@@ -71,7 +71,7 @@ public class EmotesSemanticVisitor extends EmotesVisitor {
             String valFinal = ctx.finalValue(i).getText();
 
             if (ctx.finalValue(i).array() != null) {
-                valFinal = ctx.finalValue(i).ID().getText();
+                valFinal = ctx.finalValue(i).array().ID().getText();
             }
             if (ctx.finalValue(i).functionCall() != null) {
                 visitFunctionCall(ctx.finalValue(i).functionCall());

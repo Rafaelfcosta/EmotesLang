@@ -335,7 +335,7 @@ public class BipGenerator extends EmotesVisitor {
         }
 
         //Carrega valor de um ID
-        if (valctx.ID() != null) {
+        if (valctx.ID() != null || valctx.array().ID() != null) {
             if (valctx.array() != null) {
                 //Carregar valor de vetor
                 int tempNum = getOneTemp();
@@ -344,7 +344,7 @@ public class BipGenerator extends EmotesVisitor {
                 visitExpression(valctx.array().arrayIndex().expression());
 //                }
                 comando("STO", "$indr");
-                comando("LDV", findAN(valctx.ID().getSymbol().getText()).toString());
+                comando("LDV", findAN(valctx.array().ID().getSymbol().getText()).toString());
                 tempNum = getOneTemp();
                 comando("STO", "temp" + tempNum);
                 comando("LD", "temp" + (tempNum - 1));
@@ -404,7 +404,7 @@ public class BipGenerator extends EmotesVisitor {
             releaseTheTemp();
             return;
         }
-        throw new ParseCancellationException("Outras operações não identificadas" + valctx.getText());
+        throw new ParseCancellationException("Outras operações não identificadas " + valctx.getText());
 
     }
 
@@ -417,17 +417,15 @@ public class BipGenerator extends EmotesVisitor {
         }
         //Carrega valor de um ID
         if (valctx.ID() != null) {
-            if (valctx.array() != null) {
-                //Carregar valor de vetor
-                visitExpression(valctx.array().arrayIndex().expression());
+            //Carregar valor de variavel
+            String varName = findAN(valctx.ID().getText()).toString();
+            comando("LD", varName);
+        } else if (valctx.array() != null) {
+            //Carregar valor de vetor
+            visitExpression(valctx.array().arrayIndex().expression());
 
-                comando("STO", "$indr");
-                comando("LDV", findAN(valctx.ID().getSymbol().getText()).toString());
-            } else {
-                //Carregar valor de variavel
-                String varName = findAN(valctx.ID().getText()).toString();
-                comando("LD", varName);
-            }
+            comando("STO", "$indr");
+            comando("LDV", findAN(valctx.array().ID().getSymbol().getText()).toString());
         }
 
         //Chama função
@@ -448,7 +446,7 @@ public class BipGenerator extends EmotesVisitor {
                 reverteSinalAcc();
             }
         }
-        System.out.println("Caiu fora");
+        System.out.println("Saiu");
     }
 
     @Override
@@ -505,7 +503,12 @@ public class BipGenerator extends EmotesVisitor {
 
     @Override
     public Object visitAttribution(EmoteslangParser.AttributionContext ctx) {
-        AssemblyName variavel = findAN(ctx.ID().getText());
+        AssemblyName variavel;
+        if (!(ctx.array() != null)) {
+            variavel = findAN(ctx.ID().getText());
+        } else {
+            variavel = findAN(ctx.array().ID().getText());
+        }
         if (variavel == null) {
             System.out.println("Null aqui " + ctx.ID().getText());
         }
@@ -594,20 +597,6 @@ public class BipGenerator extends EmotesVisitor {
             AssemblyName variavel = findAN(ctx.ID().getText());
             visitExpression(ctx.expression());
             comando("STO", variavel.toString());
-
-//            else {
-//                int iMax = Integer.parseInt(ctx.multidimensional().expressao(0).getText());
-//                for (int i = 0; i < iMax; i++) {
-//                    visitExpressao(ctx.declaracoesArray().subArrayDeclaracoes(0).expressao(i));
-//                    int tempNum = getOneTemp();
-//                    comando("STO", "temp" + tempNum);
-//                    comando("LDI", String.valueOf(i));
-//                    comando("STO", "$indr");
-//                    comando("LD", "temp" + tempNum);
-//                    comando("STOV", variavel.toString());
-//                    releaseTheTemp();
-//                }
-//            }
         }
         return null;
     }
@@ -637,31 +626,19 @@ public class BipGenerator extends EmotesVisitor {
         EmoteslangParser.ExpressionContext expGeralAtual;
         for (int i = 0; i < ctx.parametersCall().expression().size(); i++) {
             expGeralAtual = ctx.parametersCall().expression(i);
+            String expString = expGeralAtual.getText();
             if (ctx.READ() != null) {
                 if (expGeralAtual.finalValue(0).array() != null) {
-//                    for (ExpressaoContext exp : expGeralAtual.val_final(0).multidimensional().expressao()) {
-//                        visitExpressao(exp);
-//                    }
                     visitExpression(expGeralAtual.finalValue(0).array().arrayIndex().expression());
                     comando("STO", "$indr");
                     comando("LD", "$in_port");
-                    comando("STOV", findAN(expGeralAtual.finalValue(0).ID().getText()).toString());
+                    comando("STOV", findAN(expGeralAtual.finalValue(0).array().ID().getText()).toString());
                 } else {
                     comando("LD", "$in_port");
                     comando("STO", findAN(expGeralAtual.getText()).toString());
                 }
             } else if (ctx.WRITE() != null) {
-//                int tempNum = getOneTemp();
-                if (expGeralAtual.finalValue(0).array() != null) {
-//                    for (ExpressaoContext exp : expGeralAtual.finalValue(0).multidimensional().expressao()) {
-//                        visitExpressao(exp);
-//                    }
-                    visitExpression(expGeralAtual.finalValue(0).array().arrayIndex().expression());
-                    comando("STO", "$indr");
-                    comando("LDV", findAN(expGeralAtual.finalValue(0).ID().getText()).toString());
-                } else {
-                    visitExpression(expGeralAtual);
-                }
+                visitExpression(expGeralAtual);
                 comando("STO", "$out_port");
                 releaseTheTemp();
             }
