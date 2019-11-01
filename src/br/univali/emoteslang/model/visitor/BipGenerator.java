@@ -613,6 +613,26 @@ public class BipGenerator extends EmotesVisitor {
     }
 
     @Override
+    public Object visitDeclarationArray(EmoteslangParser.DeclarationArrayContext ctx) {
+        if (ctx.ATTRIBUTION() != null) {
+            AssemblyName variavel = findAN(ctx.ID().getText());
+            List<EmoteslangParser.ExpressionContext> expressions = ctx.initializeArray().expressionList().expression();
+            int arraySize = Integer.parseInt(ctx.arraySize().getText());
+            for (int i = 0; i < arraySize; i++) {
+                visitExpression(expressions.get(i));
+                int tempNum = getOneTemp();
+                comando("STO", "temp" + tempNum);
+                comando("LDI", String.valueOf(i));
+                comando("STO", "$indr");
+                comando("LD", "temp" + tempNum);
+                comando("STOV", variavel.toString());
+                releaseTheTemp();
+            }
+        }
+        return null;
+    }
+
+    @Override
     public Object visitInputAndOutput(EmoteslangParser.InputAndOutputContext ctx) {
         EmoteslangParser.ExpressionContext expGeralAtual;
         for (int i = 0; i < ctx.parametersCall().expression().size(); i++) {
@@ -631,7 +651,7 @@ public class BipGenerator extends EmotesVisitor {
                     comando("STO", findAN(expGeralAtual.getText()).toString());
                 }
             } else if (ctx.WRITE() != null) {
-                int tempNum = getOneTemp();
+//                int tempNum = getOneTemp();
                 if (expGeralAtual.finalValue(0).array() != null) {
 //                    for (ExpressaoContext exp : expGeralAtual.finalValue(0).multidimensional().expressao()) {
 //                        visitExpressao(exp);
