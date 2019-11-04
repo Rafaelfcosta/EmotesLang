@@ -6,3 +6,7 @@ nbproject/private/private.xml
 nbproject/private/
 /dist/
 src/br/univali/emoteslang/model/language/.antlr/
+
+.classpath
+
+.project

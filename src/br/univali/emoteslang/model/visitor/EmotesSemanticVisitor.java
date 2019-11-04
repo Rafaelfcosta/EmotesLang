@@ -867,13 +867,13 @@ public class EmotesSemanticVisitor extends EmotesVisitor {
         if (this.pilhaTipoExpressao.isEmpty()) {
             return;
         }
-        Tipo tipoAtribuição = this.pilhaTipoExpressao.pop();
-        int resultAtr = SemanticTable.atribType(tipoVariavelFinal, tipoAtribuição);
+        Tipo tipoAtribuicao = this.pilhaTipoExpressao.pop();
+        int resultAtr = SemanticTable.atribType(tipoVariavelFinal, tipoAtribuicao);
         if (resultAtr == SemanticTable.ERR) {
-            throw new ParseCancellationException("Tentando atribuir um " + tipoAtribuição.name() + " a um " + tipoVariavelFinal.name() + " na linha " + ctx.start.getLine());
+            throw new ParseCancellationException("Tentando atribuir um " + tipoAtribuicao.name() + " a um " + tipoVariavelFinal.name() + " na linha " + ctx.start.getLine());
         }
         if (resultAtr == SemanticTable.WAR) {
-            this.warnings.add("Atribuindo um " + tipoAtribuição.name() + " a um " + tipoVariavelFinal.name() + " na linha " + ctx.start.getLine());
+            this.warnings.add("Atribuindo um " + tipoAtribuicao.name() + " a um " + tipoVariavelFinal.name() + " na linha " + ctx.start.getLine());
         }
     }
 
