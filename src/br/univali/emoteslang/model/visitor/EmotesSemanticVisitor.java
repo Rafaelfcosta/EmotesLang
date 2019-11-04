@@ -95,7 +95,11 @@ public class EmotesSemanticVisitor extends EmotesVisitor {
                 }
 
                 if (!id.isInicializada()) {
-                    this.warnings.add("Váriavel " + ctx.finalValue(i).ID() + " não inicializada Linha: " + ctx.start.getLine() + " Coluna: " + ctx.start.getCharPositionInLine());
+                    if (id.getDimensoes() == 0) {
+                        this.warnings.add("Váriavel " + valFinal + " não inicializada Linha: " + ctx.start.getLine() + " Coluna: " + ctx.start.getCharPositionInLine());
+                    }else{
+                        this.warnings.add("Vetor " + valFinal + " não inicializado Linha: " + ctx.start.getLine() + " Coluna: " + ctx.start.getCharPositionInLine());
+                    }
                 } else if (id.getDimensoes() != multidimensional) {
                     throw new ParseCancellationException("Dimensões incorreta do vetor " + ctx.finalValue(i).ID() + " . Ele possui " + id.getDimensoes() + " dimensões e foi usada " + multidimensional + " Linha: " + ctx.start.getLine() + " Coluna: " + ctx.start.getCharPositionInLine());
                 }
@@ -219,8 +223,10 @@ public class EmotesSemanticVisitor extends EmotesVisitor {
     public Object visitArray(EmoteslangParser.ArrayContext ctx) {
         multidimensional = 1;
         qtdMultidimensional = 1;
-        String item = ctx.arrayIndex().expression().getText();
-        qtdMultidimensional *= Integer.parseInt(item);
+        if (ctx.arrayIndex().expression().finalValue(0).INT() != null) {
+            String item = ctx.arrayIndex().expression().getText();
+            qtdMultidimensional *= Integer.parseInt(item);
+        }
         return null;
     }
 
@@ -228,8 +234,10 @@ public class EmotesSemanticVisitor extends EmotesVisitor {
     public Object visitArrayIndex(EmoteslangParser.ArrayIndexContext ctx) {
         multidimensional = 1;
         qtdMultidimensional = 1;
-        String item = ctx.expression().getText();
-        qtdMultidimensional *= Integer.parseInt(item);
+        if (ctx.expression().finalValue(0).INT() != null) {
+            String item = ctx.expression().getText();
+            qtdMultidimensional *= Integer.parseInt(item);
+        }
         return null;
     }
 
