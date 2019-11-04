@@ -6,6 +6,7 @@
 package br.univali.emoteslang.model.visitor;
 
 import br.univali.emoteslang.model.analise.AssemblyName;
+import br.univali.emoteslang.model.analise.Escopo;
 import br.univali.emoteslang.model.analise.Identificador;
 import br.univali.emoteslang.model.language.EmoteslangParser;
 import java.util.List;
@@ -118,7 +119,11 @@ public class BipGenerator extends EmotesVisitor {
                 tempNum = this.getOneTemp();
                 this.comando("STO", "temp" + tempNum);
                 rel = ctx.operations(i - 1).op_rel();
-                this.comando("LDI", ctx.finalValue(i).getText());
+                if (ctx.finalValue(i).ID() != null) {
+                    this.comando("LD", findAN(ctx.finalValue(i).ID().getText()).toString());
+                } else {
+                    this.comando("LDI", ctx.finalValue(i).getText());
+                }
             }
             resolveValFinalEOperando(ctx.operations(i - 1), ctx.finalValue(i));
         }
@@ -450,6 +455,44 @@ public class BipGenerator extends EmotesVisitor {
     }
 
     @Override
+    public Object visitFordes(EmoteslangParser.FordesContext ctx) {
+        escopoAtual = Escopo.criaEVaiEscopoNovo("for_" + contEscopo++, escopoAtual);
+        if (ctx.initializeFor() != null) {
+            if (ctx.initializeFor().statements() != null) {
+                visitStatements(ctx.initializeFor().statements());
+            } else {
+                visitAttribution(ctx.initializeFor().attribution());
+            }
+        }
+        String rotRest = getOneRot();
+        String rotQuit = getOneRot();
+        comando(rotRest + " : ", "");
+
+        visitExpression(ctx.condition().expression());
+
+        List<EmoteslangParser.OperationsContext> operations = ctx.condition().expression().operations();
+        for (EmoteslangParser.OperationsContext operation : operations) {
+            if (operation.op_rel() != null) {
+                resolveSalto(operation.op_rel(), true, rotQuit);
+            }
+        }
+
+        visitCommandList(ctx.commandList());
+
+        if (ctx.incrementFor().expression() != null) {
+            visitExpression(ctx.incrementFor().expression());
+        } else {
+            visitAttribution(ctx.incrementFor().attribution());
+        }
+
+        comando("JMP", rotRest);
+        comando(rotQuit + " : ", "");
+        retornaEscopoPai();
+
+        return null;
+    }
+
+    @Override
     public Object visitFinalValue(EmoteslangParser.FinalValueContext ctx) {
         return super.visitFinalValue(ctx); //To change body of generated methods, choose Tools | Templates.
     }
@@ -557,7 +600,103 @@ public class BipGenerator extends EmotesVisitor {
 
     @Override
     public Object visitIfdes(EmoteslangParser.IfdesContext ctx) {
-        return super.visitIfdes(ctx); //To change body of generated methods, choose Tools | Templates.
+        escopoAtual = Escopo.criaEVaiEscopoNovo("if_" + contEscopo++, escopoAtual);
+        String rot = getOneRot();
+        String rot2 = null;
+
+        visitExpression(ctx.expression());
+        List<EmoteslangParser.OperationsContext> operations = ctx.expression().operations();
+        for (EmoteslangParser.OperationsContext operation : operations) {
+            if (operation.op_rel() != null) {
+                resolveSalto(operation.op_rel(), true, rot);
+            }
+        }
+
+        visitCommandList(ctx.commandList());
+
+        if (ctx.ifdeselse() != null || ctx.ifdeselseif() != null) {
+            rot2 = getOneRot();
+            comando("JMP", rot2);
+        }
+        comando(rot + " : ", "");
+
+        if (ctx.ifdeselse() != null) {
+            visitIfdeselse(ctx.ifdeselse());
+            comando(rot2 + " : ", "");
+        }
+        if (ctx.ifdeselseif() != null) {
+            visitIfdeselseif(ctx.ifdeselseif());
+            comando(rot2 + " : ", "");
+        }
+        retornaEscopoPai();
+
+        return null;
+    }
+
+    @Override
+    public Object visitIfdeselse(EmoteslangParser.IfdeselseContext ctx) {
+        escopoAtual = Escopo.criaEVaiEscopoNovo("else_" + contEscopo++, escopoAtual);
+        return super.visitIfdeselse(ctx); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Object visitIfdeselseif(EmoteslangParser.IfdeselseifContext ctx) {
+        escopoAtual = Escopo.criaEVaiEscopoNovo("else_if_" + contEscopo++, escopoAtual);
+        return super.visitIfdeselseif(ctx); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Object visitWhiledes(EmoteslangParser.WhiledesContext ctx) {
+        escopoAtual = Escopo.criaEVaiEscopoNovo("while_" + contEscopo++, escopoAtual);
+        String rotRest = getOneRot();
+        String rotQuit = getOneRot();
+        comando(rotRest + " : ", "");
+
+        visitExpression(ctx.expression());
+
+        List<EmoteslangParser.OperationsContext> operacoes = ctx.expression().operations();
+        for (EmoteslangParser.OperationsContext operacao : operacoes) {
+            if (operacao.op_rel() != null) {
+                resolveSalto(operacao.op_rel(), true, rotQuit);
+            }
+        }
+
+        visitCommandList(ctx.commandList());
+
+        comando("JMP", rotRest);
+        comando(rotQuit + " : ", "");
+        retornaEscopoPai();
+        return null;
+    }
+
+    @Override
+    public Object visitDoWhile(EmoteslangParser.DoWhileContext ctx) {
+        escopoAtual = Escopo.criaEVaiEscopoNovo("doWhile_" + contEscopo++, escopoAtual);
+        String rotRest = getOneRot();
+        String rotQuit = getOneRot();
+        comando(rotRest + " : ", "");
+
+        visitCommandList(ctx.commandList());
+
+        visitExpression(ctx.expression());
+
+        List<EmoteslangParser.OperationsContext> operacoes = ctx.expression().operations();
+        for (EmoteslangParser.OperationsContext operacao : operacoes) {
+            if (operacao.op_rel() != null) {
+                resolveSalto(operacao.op_rel(), true, rotQuit);
+            }
+        }
+        comando("JMP", rotRest);
+        comando(rotQuit + " : ", "");
+        retornaEscopoPai();
+        return null;
+    }
+
+    @Override
+    public Object visitReturndes(EmoteslangParser.ReturndesContext ctx) {
+        visitExpression(ctx.expression());
+        this.codigo.append("\tRETURN\n");
+        return null;
     }
 
     @Override
@@ -566,18 +705,27 @@ public class BipGenerator extends EmotesVisitor {
         for (EmoteslangParser.CommandsContext command : commands) {
             visitCommands(command);
         }
-        return super.visitCommandList(ctx); //To change body of generated methods, choose Tools | Templates.
+        return null;
     }
 
     @Override
     public Object visitCommands(EmoteslangParser.CommandsContext ctx) {
-        visitCommand(ctx.command());
+        if (ctx.command() != null) {
+            visitCommand(ctx.command());
+        } else {
+            visitConditionals(ctx.conditionals());
+        }
         return null;
     }
 
     @Override
     public Object visitCommand(EmoteslangParser.CommandContext ctx) {
         return super.visitCommand(ctx); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Object visitConditionals(EmoteslangParser.ConditionalsContext ctx) {
+        return super.visitConditionals(ctx); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
