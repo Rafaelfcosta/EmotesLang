@@ -75,7 +75,7 @@ public class EmotesSemanticVisitor extends EmotesVisitor {
             }
             if (ctx.finalValue(i).functionCall() != null) {
                 visitFunctionCall(ctx.finalValue(i).functionCall());
-                valFinal = ctx.finalValue(i).functionCall().getText();
+                valFinal = ctx.finalValue(i).functionCall().ID().getText();
             }
             if (ctx.finalValue(i).LEFT_PARENTESIS() != null) {
                 this.pilhaTipoExpressao.push(visitExpressionLoop(ctx.finalValue(i).expression()));
